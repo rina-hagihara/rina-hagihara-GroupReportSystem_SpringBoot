@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/layout}">
+<head>
+    <!-- 個別CSS -->
+    <link rel="stylesheet" th:href="@{/css/customer/list.css}">
+    <title>従業員詳細</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <h2 th:text="#{customer.detail.title}"></h2>
+        <table th:object="${customer}">
+            <tr>
+                <th th:text="#{customerCode}"></th>
+                <td th:text="*{customerCode}"></td>
+            </tr>
+            <tr>
+                <th th:text="#{customerName}"></th>
+                <td th:text="*{customerName}"></td>
+            </tr>
+            <tr>
+                <th th:text="#{phone}"></th>
+                <td th:text="*{phone}"></td>
+            </tr>
+            <tr>
+                <th th:text="#{address}"></th>
+                <td th:text="*{address}"></td>
+            </tr>
+            <tr>
+                <th th:text="#{moveDate}"></th>
+                <td th:text="*{#dates.format(moveDate, 'yyyy/MM/dd')}"></td>
+            </tr>
+            <tr>
+                <th th:text="#{payState}"></th>
+                <td th:text="*{payState == 1}? '支払い済み' : '未払い'"></td>
+            </tr>
+        </table>
+        <a th:href="@{'/customer/update/' + ${customer.customerId}}">この顧客を編集する</a>
+    </div>
+</body>
+</html>

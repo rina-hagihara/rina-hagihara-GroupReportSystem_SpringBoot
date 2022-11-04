@@ -1,0 +1,230 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.repository.MissionMapper">
+
+<!-- マッピング定義 案件-->
+<resultMap type="com.example.demo.domain.mission.model.Mission" id="mission">
+<id column="mission_id" property="missionId"></id>
+<result column="mission_title" property="missionTitle"></result>
+<result column="visit_date" property="visitDate"></result>
+<result column="move_date" property="moveDate"></result>
+<result column="pay_due" property="payDue"></result>
+<result column="note" property="note"></result>
+<collection property="employeeList" resultMap="employee" columnPrefix="employee_"></collection>
+<collection property="reportList" resultMap="report" columnPrefix="report_"></collection>
+<collection property="customerList" resultMap="customer" columnPrefix="customer_"></collection>
+</resultMap>
+
+
+
+<!-- マッピング定義 従業員 -->
+<resultMap type="com.example.demo.domain.employee.model.Employee" id="employee">
+<id column="employee_id" property="employeeId" />
+<result column="employee_code" property="employeeCode" />
+<result column="employee_name" property="employeeName" />
+<result column="password" property="password" />
+<result column="role" property="role" />
+</resultMap>
+
+<!-- マッピング定義 日報-->
+<resultMap type="com.example.demo.domain.report.model.Report" id="report">
+<id column="report_id" property="reportId"></id>
+<result column="report_title" property="reportTitle"></result>
+<result column="employee_name" property="employeeName"></result>
+<result column="content" property="content"></result>
+</resultMap>
+
+<!-- マッピング定義 顧客-->
+<resultMap type="com.example.demo.domain.customer.model.Customer" id="customer">
+<id column="customer_id" property="customerId"/>
+<result column="customer_code" property="customerCode" />
+<result column="customer_name" property="customerName"/>
+<result column="phone" property="phone"/>
+<result column="address" property="address"/>
+<result column="move_date" property="moveDate"/>
+<result column="pay_state" property="payState"/>
+</resultMap>
+
+
+
+<!-- 案件1件登録 -->
+<insert id="insertOne">
+insert into mission(
+mission_title,
+visit_date,
+move_date,
+pay_due,
+note
+)values(
+#{missionTitle},
+#{visitDate},
+#{moveDate},
+#{payDue},
+#{note}
+)
+</insert>
+
+<select id="findMany" resultType="com.example.demo.domain.mission.model.Mission">
+select
+*
+from
+mission
+</select>
+
+<select id="findOne" resultMap="mission">
+select
+*
+from
+mission
+where
+mission_id = #{missionId}
+</select>
+
+<update id="updateOne">
+update
+mission
+set
+mission_title = #{missionTitle},
+visit_date = #{visitDate},
+move_date = #{moveDate},
+pay_due = #{payDue},
+note = #{note}
+where
+mission_id = #{missionId}
+</update>
+
+<delete id="deleteOne">
+delete from
+mission
+where
+mission_id = #{missionId}
+</delete>
+
+
+<!-- 案件と従業員を結合 -->
+<insert id="joinEmployeeToMission">
+insert into mission_employee(
+employee_id,
+mission_id
+)values(
+#{employeeId},
+#{missionId}
+)
+</insert>
+
+<!-- 案件従業員を元に従業員を表示 -->
+<select id="findAssignedOne" resultMap="mission">
+select
+mission.mission_id,
+mission.mission_title,
+mission.visit_date,
+mission.move_date,
+mission.pay_due,
+employee.employee_id as employee_employee_id,
+employee.employee_code as employee_employee_code,
+employee.employee_name as employee_employee_name,
+employee.password as employee_password,
+employee.role as employee_role,
+from
+mission
+join
+mission_employee
+on mission.mission_id = mission_employee.mission_id
+left join
+employee
+on mission_employee.employee_id = employee.employee_id
+where
+mission.mission_id = #{mission_id}
+</select>
+
+
+<!-- 日報と案件をコネクト -->
+<insert id="connectMissionAndReport">
+insert into mission_report(
+mission_id,
+report_id
+) values(
+#{missionId},
+#{reportId}
+)
+</insert>
+
+<!-- 案件日報を一覧表示 -->
+<select id="findMissionReport" resultMap="mission">
+select
+mission.mission_id,
+mission.mission_title,
+mission.visit_date,
+mission.move_date,
+mission.pay_due,
+report.report_id as report_report_id,
+report.report_title as report_report_title,
+report.employee_name as report_employee_name,
+report.content as report_content
+from
+mission
+join
+mission_report
+on mission.mission_id = mission_report.mission_id
+left join
+report
+on report.report_id = mission_report.report_id
+where
+mission.mission_id = #{missionId}
+</select>
+
+<!-- 顧客を案件にアサイン -->
+<insert id="connectCustomerToMission">
+insert into mission_customer(
+customer_id,
+mission_id
+) values (
+#{customerId},
+#{missionId}
+)
+</insert>
+
+<!-- アサインされた顧客を一覧表示 -->
+<select id="findAssignedCustomer" resultMap="mission">
+select
+mission.mission_id,
+mission.mission_title,
+mission.visit_date,
+mission.move_date,
+mission.pay_due,
+customer.customer_id as customer_customer_id,
+customer.customer_code as customer_customer_code,
+customer.customer_name as customer_customer_name,
+customer.phone as customer_phone,
+customer.address as customer_address,
+customer.move_date as customer_move_date,
+customer.pay_state as customer_pay_state
+from
+mission
+join
+mission_customer
+on mission.mission_id = mission_customer.mission_id
+left join
+customer
+on customer.customer_id = mission_customer.customer_id
+where
+mission.mission_id = #{missionId}
+</select>
+
+<!-- アサインされた顧客をキャンセル -->
+<delete id="cancelCustomerOne">
+delete from mission_customer
+where
+customer_id = #{customerId} and mission_id = #{missionId}
+</delete>
+
+<!-- アサインされた従業員をキャンセル -->
+<delete id="cancelEmployeeOne">
+delete from mission_employee
+where
+employee_id = #{employeeId} and mission_id = #{missionId}
+</delete>
+
+</mapper>

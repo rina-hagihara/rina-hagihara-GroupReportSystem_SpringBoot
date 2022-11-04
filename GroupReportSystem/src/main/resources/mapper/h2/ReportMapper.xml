@@ -1,0 +1,73 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.demo.repository.ReportMapper">
+<!-- マッピング定義 -->
+<resultMap type="com.example.demo.domain.report.model.Report" id="report">
+<id column="report_id" property="reportId"></id>
+<result column="report_title" property="reportTitle"></result>
+<result column="employee_name" property="employeeName"></result>
+<result column="content" property="content"></result>
+</resultMap>
+
+<insert id="signupOne">
+insert into report(
+report_code,
+report_title,
+employee_name,
+content
+) values (
+#{reportCode},
+#{reportTitle},
+#{employeeName},
+#{content}
+)
+</insert>
+
+<select id="findMany" resultType="com.example.demo.domain.report.model.Report">
+select
+*
+from
+report
+</select>
+
+<select id="findOne" resultMap="report">
+select
+*
+from
+report
+where
+report_id = #{reportId}
+</select>
+
+<update id="updateOne">
+update
+report
+set
+report_title = #{reportTitle},
+employee_name = #{employeeName},
+content = #{content}
+where
+report_id = #{reportId}
+</update>
+
+<delete id="deleteOne">
+delete
+from
+report
+where
+report_id = #{reportId}
+</delete>
+
+<!-- 日報番号から日報を1件取得 -->
+<select id="getReportOneByCode" resultMap="report">
+select
+*
+from
+report
+where
+report_code = #{reportCode}
+</select>
+
+</mapper>

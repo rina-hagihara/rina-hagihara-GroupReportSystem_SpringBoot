@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http:/www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/layout}">
+<head>
+<title>ログインユーザー担当案件一覧</title>
+<!-- CSS読込 -->
+<link rel="stylesheet" th:href="@{/css/employee/list.css}">
+</head>
+<body>
+    <div layout:fragment="content">
+    <div>
+        <h2>担当案件一覧</h2>
+    </div>
+    <table>
+        <thead>
+            <th th:text="#{missionId}"></th>
+            <th th:text="#{missionTitle}"></th>
+            <th th:text="#{moveDate}"></th>
+            <th th:text="#{detail}"></th>
+        </thead>
+        <tbody >
+            <tr th:each="item:${loginEmployeeMission}">
+                <td th:text="${item.missionId}"></td>
+                <td th:text="${item.missionTitle}"></td>
+                <td th:text="${item.moveDate}"></td>
+                <td><a th:href="@{'/mission/detail/' + ${item.missionId}}">詳細を見る</a></td>
+            </tr>
+        </tbody>
+    </table>
+    <a th:href="@{/mission/signup}">新規案件を登録</a>
+</div>
+</body>
+</html>

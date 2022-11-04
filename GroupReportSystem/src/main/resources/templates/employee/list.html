@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/layout}"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>従業員一覧</title>
+    <!-- 個別CSS読込 -->
+    <link rel="stylesheet" th:href="@{/css/employee/list.css}">
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="employee-list">
+            <h2>従業員一覧</h2>
+
+            <!-- 検索 -->
+            <div class="mb-4">
+            <form id="user-search-form" method="post" th:action="@{/employee/list}"
+            class="form-inline" th:object="${employeeListForm}">
+            <div class="form-group">
+                <label for="employeeCode" class="mr-2" th:text="#{employeeCode}"></label>
+                <input type="text" class="form-control" th:field="*{employeeCode}"/>
+            </div>
+            <div class="form-group mx-sm-3">
+                <label for="employeeName" class="mr-2" th:text="#{employeeName}"></label>
+                <input type="text" class="form-control" th:field="*{employeeName}"/>
+            </div>
+            <button type="subbmit" class="btn btn-primary">検索</button>
+            </form>
+            </div>
+
+
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>社員番号</th>
+                        <th>氏名</th>
+                        <th>権限</th>
+                        <th>詳細</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="item : ${employeeList}">
+                        <td th:text="${item.employeeCode}"></td>
+                        <td th:text="${item.employeeName}"></td>
+                        <td th:text="${item.role == 'ROLE_ADMIN'}? '管理者' : '一般'"></td>
+                        <td><a th:href="@{'/employee/detail/' + ${item.employeeId}}">詳細を見る</a></td>
+                    </tr>
+                </tbody>
+            </table>
+            <a th:href="@{/employee/signup}" sec:authorize="hasRole('ADMIN')">従業員の新規登録</a>
+
+        </div>
+    </div>
+</body>

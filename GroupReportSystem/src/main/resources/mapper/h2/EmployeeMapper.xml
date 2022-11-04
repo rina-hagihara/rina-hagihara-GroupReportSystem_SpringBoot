@@ -1,0 +1,138 @@
+<?xml version ="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- Mapperとxmlのマッピング -->
+<mapper namespace="com.example.demo.repository.EmployeeMapper">
+
+<!-- マッピング定義 -->
+<resultMap type="com.example.demo.domain.employee.model.Employee" id="employee">
+<id column="employee_id" property="employeeId" />
+<result column="employee_code" property="employeeCode" />
+<result column="employee_name" property="employeeName" />
+<result column="password" property="password" />
+<result column="role" property="role" />
+<collection property="missionList" resultMap="mission" columnPrefix="mission_"></collection>
+</resultMap>
+
+<!-- マッピング定義 案件-->
+<resultMap type="com.example.demo.domain.mission.model.Mission" id="mission">
+<id column="mission_id" property="missionId"></id>
+<result column="mission_title" property="missionTitle"></result>
+<result column="visit_date" property="visitDate"></result>
+<result column="move_date" property="moveDate"></result>
+<result column="pay_due" property="payDue"></result>
+<result column="note" property="note"></result>
+</resultMap>
+
+
+<!-- 従業員一件登録 -->
+<insert id="insertOne">
+insert into employee(
+employee_code,
+employee_name,
+password,
+role
+)
+values(
+#{employeeCode},
+#{employeeName},
+#{password},
+#{role}
+)
+</insert>
+
+<!-- 従業員コードで従業員取得 -->
+<select id="findSameCode" resultMap="employee">
+select
+*
+from
+employee
+where
+employee_code = #{employeeCode}
+</select>
+
+<!-- 従業員一覧取得 -->
+<select id="findMany" resultMap="employee">
+select
+*
+from
+employee
+<where>
+<if test="employeeCode != null">
+employee_code like '%' || #{employeeCode} || '%'
+</if>
+<if test="employeeName != null">
+and employee_name like '%' || #{employeeName} || '%'
+</if>
+</where>
+</select>
+
+<!-- 従業員1件検索 -->
+<select id="findOne" resultType="Employee">
+select
+*
+from
+employee
+where
+employee_id = #{employeeId}
+</select>
+
+<!-- 従業員更新 -->
+<update id="updateOne">
+update
+employee
+set
+employee_code = #{employeeCode},
+employee_name = #{employeeName},
+role = #{role}
+where
+employee_id = #{employeeId}
+</update>
+
+<!-- ユーザー1件削除 -->
+<delete id="deleteOne">
+delete from
+employee
+where
+employee_id = #{employeeId}
+</delete>
+
+<!-- 従業員番号を条件に従業員情報1件取得 -->
+<select id="findEmployeeDetailByCode" resultMap="employee">
+select
+*
+from
+employee
+where
+employee_code = #{employeeCode}
+</select>
+
+
+<!-- ログイン中の従業員の担当案件表示 -->
+<select id="findAssignedMission" resultMap="employee">
+select
+employee.employee_id,
+employee.employee_code,
+employee.employee_name,
+employee.password,
+employee.role,
+mission.mission_id as mission_mission_id,
+mission.mission_title as mission_mission_title,
+mission.visit_date as mission_visit_date,
+mission.move_date as mission_move_date,
+mission.pay_due as mission_pay_due,
+mission.note as mission_note
+from
+employee
+join
+mission_employee
+on employee.employee_id = mission_employee.employee_id
+left join
+mission
+on mission.mission_id = mission_employee.mission_id
+where
+employee.employee_id = #{employeeId}
+</select>
+
+</mapper>

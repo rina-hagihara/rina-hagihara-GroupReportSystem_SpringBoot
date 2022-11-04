@@ -1,0 +1,27 @@
+th{
+    border: 1px solid black;
+    width: 11rem;
+    text-align: center;
+    padding: 0.3rem 0.5rem;
+    background-color: darkseagreen;
+}
+
+td{
+    border: 1px solid black;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    width: 18rem;
+}
+
+table{
+    font-size: 1.2rem;
+
+}
+
+h2{
+    margin-bottom: 2rem;
+}
+
+table{
+    margin-bottom: 3rem;
+}

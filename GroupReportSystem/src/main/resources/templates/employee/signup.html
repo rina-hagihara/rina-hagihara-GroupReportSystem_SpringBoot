@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/layout}">
+<head>
+    <title>従業員新規登録</title>
+    <!-- 個別CSS読込 -->
+    <link rel="stylesheet" th:href="@{/css/employee/list.css}">
+</head>
+<body>
+<div layout:fragment="content">
+    <form method="POST" action="/employee/signup" th:object="${employeeSignupForm}">
+        <h2 th:text="#{employee.signup.title}"></h2>
+        <label for="code" th:text="#{employeeCode}"></label><br/>
+        <input type="text" th:field="*{employeeCode}" th:errorclass="is-invalid"/>
+        <div class="invalid-feedback"th:errors="*{employeeCode}"></div><br/>
+        <div class="customize-error" th:if="${message != null}" th:text="${message}"></div><br/>
+
+
+        <label for="name" th:text="#{employeeName}"></label><br/>
+        <input type="text" th:field="*{employeeName}" th:errorclass="is-invalid"/>
+        <div class="invalid-feedback" th:errors="*{employeeName}"></div><br/><br/>
+
+        <label for="password" th:text="#{password}"></label><br/>
+        <input type="password" th:field="*{password}" th:errorclass="is-invalid">
+        <div class="invalid-feedback" th:errors="*{password}"></div>
+
+        <br/><br/>
+
+
+        <div th:each="item : ${roleMap}">
+        <input type="radio" th:value="${item.value}" th:field="*{role}"
+        th:errorclass="is-invalid">
+        <label th:text="${item.key}"></label></div>
+        <div th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div><br/><br/>
+
+        <input type="submit" th:value="#{signup.btn}" />
+    </form>
+</div>
+</body>
+</html>
