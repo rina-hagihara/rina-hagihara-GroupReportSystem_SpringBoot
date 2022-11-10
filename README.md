@@ -5,9 +5,7 @@
 
 
 ## デモ
-
-![デモ](https://image-url.gif)
-
+![GroupReportSystem_demo](https://user-images.githubusercontent.com/105138680/201002542-bfde4a64-399e-4660-9076-d407bda773f0.png)
 
 ## 使い方
 
@@ -22,7 +20,7 @@
 
 ## 環境
 
-* SpringBoot(後でpom.xmlから確認)
+* SpringBoot
 * Thymeleaf
 
 
