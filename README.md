@@ -10,7 +10,7 @@
 
 
 #### ER図
-![ER図](https://user-images.githubusercontent.com/105138680/201299969-68f6f8ba-1efa-4d6d-912a-0e72e9df2955.png)
+![ER図](https://user-images.githubusercontent.com/105138680/201304608-30e65ff3-dc8b-4407-b37b-de9346affbb6.png)
 
 
 #### ワイヤーフレーム
