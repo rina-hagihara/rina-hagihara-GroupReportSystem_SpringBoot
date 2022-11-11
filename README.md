@@ -5,7 +5,17 @@
 
 
 ## デモ
+#### デモ画面
 ![GroupReportSystem_demo](https://user-images.githubusercontent.com/105138680/201002542-bfde4a64-399e-4660-9076-d407bda773f0.png)
+
+
+#### ER図
+![ER図](https://user-images.githubusercontent.com/105138680/201299969-68f6f8ba-1efa-4d6d-912a-0e72e9df2955.png)
+
+
+#### ワイヤーフレーム
+![ワイヤーフレーム](https://user-images.githubusercontent.com/105138680/201299984-44941e3f-697d-4991-956c-a8133d0ffb78.png)
+
 
 ## 使い方
 
@@ -37,7 +47,4 @@
 "rina-hagihara-GroupReportSystem_SpringBoo" is under [Rina Hagihara](#).
 
 
-## 参考文献
-
-後悔しないためのSpring Boot 入門書：Spring 解体新書（第2版）田村達也
 
