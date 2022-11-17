@@ -12,3 +12,4 @@ public class JavaConfig {
         return new ModelMapper();
     }
 }
+

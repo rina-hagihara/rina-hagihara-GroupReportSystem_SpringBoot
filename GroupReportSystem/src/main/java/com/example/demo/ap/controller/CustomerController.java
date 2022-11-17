@@ -40,13 +40,18 @@ public class CustomerController {
     @Autowired
     ModelMapper modelMapper;
 
+
+
     /** 顧客新規登録 */
 
     @GetMapping("/signup")
     public String  getCustomerSignup(Locale locale, Model model, @ModelAttribute CustomerSignupForm form) {
-        Map<String, Integer> payStateMap = customerApplicationService.getPayState(locale);
-        model.addAttribute("payStateMap", payStateMap);
+
+    	Map<String, Integer> payStateMap = customerApplicationService.getPayState();
+
+    	model.addAttribute("payStateMap", payStateMap);
         return "customer/signup";
+
     }
 
     @PostMapping("/signup")
@@ -98,7 +103,7 @@ public class CustomerController {
         }
 
         log.info("customerUpdateForm.toString : " + customerUpdateForm.toString());
-        model.addAttribute("payStateMap", customerApplicationService.getPayState(locale));
+        model.addAttribute("payStateMap", customerApplicationService.getPayState());
         return "customer/update";
     }
 
