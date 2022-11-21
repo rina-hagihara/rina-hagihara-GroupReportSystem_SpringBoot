@@ -1,5 +1,8 @@
 package com.example.demo.constant;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public enum PayState {
 
 	PAID("支払い済み", 1),
@@ -21,6 +24,18 @@ public enum PayState {
 
 	public Integer getCode() {
 		return this.code;
+	}
+
+	public static Map<String, Integer> getPayState(){
+
+		Map<String, Integer> payStates = new LinkedHashMap<>();
+		PayState paid = PayState.PAID;
+		payStates.put(paid.getState(), paid.getCode());
+
+		PayState unpaid = PayState.UNPAID;
+		payStates.put(unpaid.getState(), unpaid.getCode());
+
+		return payStates;
 	}
 
 

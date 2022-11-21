@@ -20,7 +20,7 @@ import com.example.demo.ap.form.EmployeeListForm;
 import com.example.demo.ap.form.EmployeeSignupForm;
 import com.example.demo.ap.form.EmployeeUpdateForm;
 import com.example.demo.ap.form.GroupOrder;
-import com.example.demo.application.service.EmployeeApplicationService;
+import com.example.demo.constant.Role;
 import com.example.demo.domain.employee.model.Employee;
 import com.example.demo.domain.employee.service.EmployeeService;
 
@@ -33,8 +33,6 @@ public class EmployeeController {
 
 
 
-    @Autowired
-    private EmployeeApplicationService employeeApplicationService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -52,7 +50,7 @@ public class EmployeeController {
     @GetMapping("/signup")
     public String getSignupEmployee(Model model, Locale locale,
             @ModelAttribute EmployeeSignupForm form){
-        Map<String, String> roleMap = employeeApplicationService.getRole(locale);
+        Map<String, String> roleMap = Role.getMapRole();
         model.addAttribute("roleMap", roleMap);
         return "employee/signup";
     }
@@ -139,7 +137,7 @@ public class EmployeeController {
         }
 
         log.info("employeeUpdate.toString : " + employeeUpdateForm.toString());
-        model.addAttribute("roleMap", employeeApplicationService.getRole(locale));
+        model.addAttribute("roleMap", Role.getMapRole());
 
         return "employee/update";
     }

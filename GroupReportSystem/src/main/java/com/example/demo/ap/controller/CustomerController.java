@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.ap.form.CustomerSignupForm;
 import com.example.demo.ap.form.CustomerUpdateForm;
-import com.example.demo.application.service.CustomerApplicationService;
+import com.example.demo.constant.PayState;
 import com.example.demo.domain.customer.model.Customer;
 import com.example.demo.domain.customer.service.CustomerService;
 
@@ -31,8 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CustomerController {
 
-    @Autowired
-    private CustomerApplicationService customerApplicationService;
+
 
     @Autowired
     private CustomerService customerService;
@@ -47,7 +46,7 @@ public class CustomerController {
     @GetMapping("/signup")
     public String  getCustomerSignup(Locale locale, Model model, @ModelAttribute CustomerSignupForm form) {
 
-    	Map<String, Integer> payStateMap = customerApplicationService.getPayState();
+    	Map<String, Integer> payStateMap = PayState.getPayState();
 
     	model.addAttribute("payStateMap", payStateMap);
         return "customer/signup";
@@ -103,7 +102,7 @@ public class CustomerController {
         }
 
         log.info("customerUpdateForm.toString : " + customerUpdateForm.toString());
-        model.addAttribute("payStateMap", customerApplicationService.getPayState());
+        model.addAttribute("payStateMap", PayState.getPayState());
         return "customer/update";
     }
 
