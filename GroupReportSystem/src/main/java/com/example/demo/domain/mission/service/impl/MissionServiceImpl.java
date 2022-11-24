@@ -51,11 +51,11 @@ public class MissionServiceImpl implements MissionService {
 		mapper.joinEmployeeToMission(employeeId, missionId);
 	}
 
-	/** アサインされた従業員を表示 */
+	/** アサインされた従業員を表示
 	@Override
 	public Mission getAssignedEmployee(int missionId) {
 		return mapper.findAssignedOne(missionId);
-	}
+	}*/
 
 	/** 日報と案件をコネクト */
 	@Override
@@ -63,11 +63,11 @@ public class MissionServiceImpl implements MissionService {
 		mapper.connectMissionAndReport(missionId, reportId);
 	}
 
-	/** 案件の日報を一覧表示 */
+	/** 案件の日報を一覧表示
 	@Override
 	public Mission getMissionReportList(int missionId) {
 		return mapper.findMissionReport(missionId);
-	}
+	}*/
 
 	/** 顧客を案件にアサイン */
 	@Override
@@ -75,11 +75,11 @@ public class MissionServiceImpl implements MissionService {
 		mapper.connectCustomerToMission(customerId, missionId);
 	}
 
-	/** アサインされた顧客を表示 */
+	/** アサインされた顧客を表示
 	@Override
 	public Mission getAssignedCustomer(int missionId) {
 		return mapper.findAssignedCustomer(missionId);
-	}
+	}*/
 
 	/** アサインされた顧客を取り消し */
 	@Override
@@ -91,6 +91,12 @@ public class MissionServiceImpl implements MissionService {
 	@Override
 	public void cancelEmployee(int employeeId, int missionId) {
 		mapper.cancelEmployeeOne(employeeId, missionId);
+	}
+
+	/** アサインされた従業員、顧客、日報を一覧表示 */
+	@Override
+	public Mission findManyRelatedTheMission(int missionId) {
+		return mapper.findManyRelatedThisMission(missionId);
 	}
 
 }

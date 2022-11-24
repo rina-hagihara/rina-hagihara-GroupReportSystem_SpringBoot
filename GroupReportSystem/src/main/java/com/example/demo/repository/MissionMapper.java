@@ -27,25 +27,28 @@ public interface MissionMapper {
 	/** 従業員アサイン */
 	public void joinEmployeeToMission(int employeeId, int missionId);
 
-	/** 案件IDをもとに案件担当従業員を表示 */
-	public Mission findAssignedOne(int missionId);
+	/** 案件IDをもとに案件担当従業員を表示
+	public Mission findAssignedOne(int missionId);*/
 
 	/** 日報と案件をコネクト */
 	public void connectMissionAndReport(int missionId, int reportId);
 
-	/** 案件の日報を一覧表示 */
-	public Mission findMissionReport(int missionId);
+	/** 案件の日報を一覧表示
+	public Mission findMissionReport(int missionId);*/
 
 	/** 顧客を案件にアサイン */
 	public void connectCustomerToMission(int customerId, int missionId);
 
-	/** アサインされた顧客を一覧表示 */
-	public Mission findAssignedCustomer(int missionId);
+	/** アサインされた顧客を一覧表示
+	public Mission findAssignedCustomer(int missionId);*/
 
 	/** アサインされた顧客をキャンセル */
 	public void cancelCustomerOne(int customerId, int missionId);
 
 	/** アサインされた従業員をキャンセル */
 	public void cancelEmployeeOne(int employeeId, int missionId);
+
+	/** アサインされた従業員、顧客、日報を一覧表示 */
+	public Mission findManyRelatedThisMission(int missionId);
 
 }

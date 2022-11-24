@@ -115,7 +115,7 @@ mission_id
 </insert>
 
 <!-- 案件従業員を元に従業員を表示 -->
-<select id="findAssignedOne" resultMap="mission">
+<!-- <select id="findAssignedOne" resultMap="mission">
 select
 mission.mission_id,
 mission.mission_title,
@@ -137,7 +137,7 @@ employee
 on mission_employee.employee_id = employee.employee_id
 where
 mission.mission_id = #{mission_id}
-</select>
+</select> -->
 
 
 <!-- 日報と案件をコネクト -->
@@ -152,7 +152,7 @@ report_id
 </insert>
 
 <!-- 案件日報を一覧表示 -->
-<select id="findMissionReport" resultMap="mission">
+<!-- <select id="findMissionReport" resultMap="mission">
 select
 mission.mission_id,
 mission.mission_title,
@@ -173,7 +173,7 @@ report
 on report.report_id = mission_report.report_id
 where
 mission.mission_id = #{missionId}
-</select>
+</select> -->
 
 <!-- 顧客を案件にアサイン -->
 <insert id="connectCustomerToMission">
@@ -187,7 +187,7 @@ mission_id
 </insert>
 
 <!-- アサインされた顧客を一覧表示 -->
-<select id="findAssignedCustomer" resultMap="mission">
+<!--  <select id="findAssignedCustomer" resultMap="mission">
 select
 mission.mission_id,
 mission.mission_title,
@@ -211,7 +211,7 @@ customer
 on customer.customer_id = mission_customer.customer_id
 where
 mission.mission_id = #{missionId}
-</select>
+</select>-->
 
 <!-- アサインされた顧客をキャンセル -->
 <delete id="cancelCustomerOne">
@@ -226,5 +226,57 @@ delete from mission_employee
 where
 employee_id = #{employeeId} and mission_id = #{missionId}
 </delete>
+
+<!-- 案件にアサインされた顧客、従業員、紐づいた日報を一覧表示 -->
+<select id="findManyRelatedThisMission" resultMap="mission">
+select
+mission.mission_id,
+mission.mission_title,
+mission.visit_date,
+mission.move_date,
+mission.pay_due,
+report.report_id as report_report_id,
+report.report_title as report_report_title,
+report.employee_name as report_employee_name,
+report.content as report_content,
+employee.employee_id as employee_employee_id,
+employee.employee_code as employee_employee_code,
+employee.employee_name as employee_employee_name,
+employee.password as employee_password,
+employee.role as employee_role,
+customer.customer_id as customer_customer_id,
+customer.customer_code as customer_customer_code,
+customer.customer_name as customer_customer_name,
+customer.phone as customer_phone,
+customer.address as customer_address,
+customer.move_date as customer_move_date,
+customer.pay_state as customer_pay_state
+from
+mission
+left join
+mission_report
+on mission.mission_id = mission_report.mission_id
+left join
+mission_employee
+on mission.mission_id = mission_employee.mission_id
+left join
+mission_customer
+on mission.mission_id = mission_customer.mission_id
+left join
+report, employee, customer
+where
+mission.mission_id = #{missionId}
+</select>
+
+
+
+
+
+
+
+
+
+
+
 
 </mapper>

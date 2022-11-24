@@ -27,24 +27,28 @@ public interface MissionService {
 	/** 従業員アサイン */
 	public void assignEmployeeToMission(int employeeId, int missionId);
 
-	/** アサインされた従業員を表示 */
-	public Mission getAssignedEmployee(int missionId);
+	/** アサインされた従業員を表示
+	public Mission getAssignedEmployee(int missionId);*/
 
 	/** 日報と案件をコネクト */
 	public void connectMissionToReport(int missionId, int reportId);
 
-	/** 案件の日報を一覧表示 */
-	public Mission getMissionReportList(int missionId);
+	/** 案件の日報を一覧表示
+	public Mission getMissionReportList(int missionId);*/
 
 	/** 顧客を案件にアサイン */
 	public void assignCustomerToMission(int customerId, int missionId);
 
-	/** アサインされた顧客を表示 */
-	public Mission getAssignedCustomer(int missionId);
+	/** アサインされた顧客を表示
+	public Mission getAssignedCustomer(int missionId);*/
 
 	/** アサインされた顧客を取り消し */
 	public void cancelCustomer(int customerId, int missionId);
 
 	/** アサインされた従業員を取り消し */
 	public void cancelEmployee(int employeeId, int missionId);
+
+	/** アサインされた従業員、顧客、日報を一覧表示 */
+	public Mission findManyRelatedTheMission(int missionId);
+
 }

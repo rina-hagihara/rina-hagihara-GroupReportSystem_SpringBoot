@@ -84,30 +84,42 @@ public class MissionController {
 		Mission mission = missionService.getMissionDetail(missionId);
 		model.addAttribute("mission", mission);
 
-		/** 案件にアサインした従業員を表示*/
+		/** 案件にアサインした従業員を表示
 		Mission assignedEmployee = missionService.getAssignedEmployee(missionId);
 		if (assignedEmployee != null) {
 			model.addAttribute("assignedEmployeeList", assignedEmployee.getEmployeeList());
 		} else {
 			//nullの場合空のリストを設定
 			model.addAttribute("assignedEmployee", new ArrayList<Employee>());
-		}
+		}*/
 
-		/** 案件の日報一覧を表示 */
+		/** 案件の日報一覧を表示
 		Mission missionReport = missionService.getMissionReportList(missionId);
 
 		if (missionReport != null) {
 			model.addAttribute("missionReportList", missionReport.getReportList());
 		} else {
 			model.addAttribute("missionReportList", new ArrayList<Report>());
-		}
+		}*/
 
-		/** アサインした顧客を一覧表示 */
+		/** アサインした顧客を一覧表示
 		Mission assignedCustomer = missionService.getAssignedCustomer(missionId);
 		if (assignedCustomer != null) {
 			model.addAttribute("assignedCustomerList", assignedCustomer.getCustomerList());
 		} else {
 			model.addAttribute("assignedCustomerList", new ArrayList<Customer>());
+		}*/
+
+		/** 案件にアサインされた従業員、顧客、日報を一覧表示 */
+		Mission assignedOne = missionService.findManyRelatedTheMission(missionId);
+		if(assignedOne != null) {
+		model.addAttribute("assignedCustomerList", assignedOne.getCustomerList());
+		model.addAttribute("missionReportList", assignedOne.getReportList());
+		model.addAttribute("assignedEmployeeList", assignedOne.getEmployeeList());
+		} else {
+			model.addAttribute("assignedCustomerList", new ArrayList<Customer>());
+			model.addAttribute("missionReportList", new ArrayList<Report>());
+			model.addAttribute("assignedEmployeeList", new ArrayList<Employee>());
 		}
 
 		return "mission/detail";
