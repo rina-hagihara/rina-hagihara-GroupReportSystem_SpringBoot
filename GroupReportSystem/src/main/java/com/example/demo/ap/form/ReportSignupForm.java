@@ -5,13 +5,12 @@ import lombok.Data;
 @Data
 public class ReportSignupForm {
 
-    private String reportCode;
+	private String reportCode;
 
-    private String reportTitle;
+	private String reportTitle;
 
-    private String employeeName;
+	private String employeeName;
 
-    private String content;
-
+	private String content;
 
 }

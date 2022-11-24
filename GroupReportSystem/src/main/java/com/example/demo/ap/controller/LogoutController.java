@@ -9,9 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LogoutController {
 
-    @PostMapping("/logout")
-    public String postLogout() {
-    log.info("ログアウト");
-        return "redirect:/login";
-}
+	@PostMapping("/logout")
+	public String postLogout() {
+		log.info("ログアウト");
+		return "redirect:/login";
+	}
 }

@@ -32,196 +32,185 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MissionController {
 
+	@Autowired
+	MissionService missionService;
 
+	@Autowired
+	EmployeeService employeeService;
 
-    @Autowired
-    MissionService missionService;
+	@Autowired
+	CustomerService customerService;
 
-    @Autowired
-    EmployeeService employeeService;
+	@Autowired
+	ModelMapper modelMapper;
 
-    @Autowired
-    CustomerService customerService;
+	/** 案件新規登録 */
 
-    @Autowired
-    ModelMapper modelMapper;
+	@GetMapping("/signup")
+	public String getMissionSignup(@ModelAttribute MissionSignupForm form) {
+		return "mission/signup";
+	}
 
-    /** 案件新規登録 */
+	@PostMapping("/signup")
+	public String postMissionSignup(@ModelAttribute @Validated MissionSignupForm form,
+			BindingResult bindingResult) {
 
-    @GetMapping("/signup")
-    public String getMissionSignup(@ModelAttribute MissionSignupForm form) {
-        return "mission/signup";
-    }
+		if (bindingResult.hasErrors()) {
+			getMissionSignup(form);
+		}
 
-    @PostMapping("/signup")
-    public String postMissionSignup(@ModelAttribute @Validated MissionSignupForm form,
-            BindingResult bindingResult) {
+		log.info(form.toString());
 
-        if(bindingResult.hasErrors()) {
-            getMissionSignup(form);
-        }
+		Mission mission = modelMapper.map(form, Mission.class);
+		missionService.insertMission(mission);
 
-        log.info(form.toString());
+		return "redirect:/mission/list";
+	}
 
-        Mission mission = modelMapper.map(form, Mission.class);
-        missionService.insertMission(mission);
+	/** 案件一覧表示 */
+	@GetMapping("/list")
+	public String getMissionList(Model model) {
 
+		List<Mission> mission = missionService.getMissionList();
+		model.addAttribute("mission", mission);
 
-        return "redirect:/mission/list";
-    }
+		return "mission/list";
+	}
 
-    /** 案件一覧表示 */
-    @GetMapping("/list")
-    public String getMissionList(Model model) {
+	/** 案件詳細表示 */
+	@GetMapping("/detail/{missionId}")
+	public String getDetail(@PathVariable("missionId") int missionId, Model model) {
 
-        List<Mission> mission = missionService.getMissionList();
-        model.addAttribute("mission", mission);
+		Mission mission = missionService.getMissionDetail(missionId);
+		model.addAttribute("mission", mission);
 
-        return "mission/list";
-    }
+		/** 案件にアサインした従業員を表示*/
+		Mission assignedEmployee = missionService.getAssignedEmployee(missionId);
+		if (assignedEmployee != null) {
+			model.addAttribute("assignedEmployeeList", assignedEmployee.getEmployeeList());
+		} else {
+			//nullの場合空のリストを設定
+			model.addAttribute("assignedEmployee", new ArrayList<Employee>());
+		}
 
-    /** 案件詳細表示 */
-    @GetMapping("/detail/{missionId}")
-    public String getDetail(@PathVariable("missionId") int missionId, Model model) {
+		/** 案件の日報一覧を表示 */
+		Mission missionReport = missionService.getMissionReportList(missionId);
 
-        Mission mission = missionService.getMissionDetail(missionId);
-        model.addAttribute("mission", mission);
+		if (missionReport != null) {
+			model.addAttribute("missionReportList", missionReport.getReportList());
+		} else {
+			model.addAttribute("missionReportList", new ArrayList<Report>());
+		}
 
+		/** アサインした顧客を一覧表示 */
+		Mission assignedCustomer = missionService.getAssignedCustomer(missionId);
+		if (assignedCustomer != null) {
+			model.addAttribute("assignedCustomerList", assignedCustomer.getCustomerList());
+		} else {
+			model.addAttribute("assignedCustomerList", new ArrayList<Customer>());
+		}
 
-        /** 案件にアサインした従業員を表示*/
-        Mission assignedEmployee = missionService.getAssignedEmployee(missionId);
-       if(assignedEmployee != null) {
-       model.addAttribute("assignedEmployeeList", assignedEmployee.getEmployeeList());
-       } else {
-           //nullの場合空のリストを設定
-           model.addAttribute("assignedEmployee", new ArrayList<Employee>());
-       }
+		return "mission/detail";
+	}
 
+	/** 案件更新 */
+	@GetMapping("/update/{missionId}")
+	String getMissionUpdate(@PathVariable("missionId") int missionId,
+			@ModelAttribute MissionUpdateForm missionUpdateForm,
+			Model model) {
 
-       /** 案件の日報一覧を表示 */
-       Mission missionReport = missionService.getMissionReportList(missionId);
+		if (missionUpdateForm.getMissionTitle() == null) {
+			Mission mission = missionService.getMissionDetail(missionId);
+			missionUpdateForm = modelMapper.map(mission, MissionUpdateForm.class);
+			model.addAttribute("missionUpdateForm", missionUpdateForm);
+		}
 
-       if(missionReport != null) {
-       model.addAttribute("missionReportList", missionReport.getReportList());
-       } else {
-           model.addAttribute("missionReportList", new ArrayList<Report>());
-       }
+		log.info("missionUpdateForm.toString : " + missionUpdateForm.toString());
+		return "mission/update";
+	}
 
-       /** アサインした顧客を一覧表示 */
-       Mission assignedCustomer = missionService.getAssignedCustomer(missionId);
-       if(assignedCustomer != null) {
-       model.addAttribute("assignedCustomerList", assignedCustomer.getCustomerList());
-       } else {
-           model.addAttribute("assignedCustomerList", new ArrayList<Customer>());
-       }
+	@PostMapping("/update/{missionId}")
+	String postMissionUpdate(@PathVariable("missionId") int missionId,
+			@ModelAttribute @Validated MissionUpdateForm missionUpdateForm,
+			BindingResult bindingResult, Model model) {
 
+		if (bindingResult.hasErrors()) {
+			getMissionUpdate(missionId, missionUpdateForm, model);
+		}
 
-        return "mission/detail";
-    }
+		log.info("missionUpdateForm.toString : " + missionUpdateForm.toString());
+		Mission mission = modelMapper.map(missionUpdateForm, Mission.class);
+		missionService.updateMission(mission);
 
-    /** 案件更新 */
-    @GetMapping("/update/{missionId}")
-    String getMissionUpdate(@PathVariable("missionId")int missionId, @ModelAttribute  MissionUpdateForm missionUpdateForm,
-            Model model) {
+		return "redirect:/mission/list";
+	}
 
-        if(missionUpdateForm.getMissionTitle() == null) {
-            Mission mission = missionService.getMissionDetail(missionId);
-            missionUpdateForm = modelMapper.map(mission, MissionUpdateForm.class);
-            model.addAttribute("missionUpdateForm", missionUpdateForm);
-        }
+	/** 案件削除 */
+	@PostMapping("/delete/{missionId}")
+	public String deleteMission(@PathVariable("missionId") int missionId) {
+		missionService.deleteMission(missionId);
 
-        log.info("missionUpdateForm.toString : " + missionUpdateForm.toString());
-        return "mission/update";
-    }
+		return "redirect:/mission/list";
+	}
 
-    @PostMapping("/update/{missionId}")
-    String postMissionUpdate(@PathVariable("missionId")int missionId, @ModelAttribute @Validated MissionUpdateForm missionUpdateForm,
-           BindingResult bindingResult, Model model ) {
+	/** 従業員アサインページを表示 */
+	@GetMapping("/employeeAssign/{missionId}")
+	public String getMissionAssign(@PathVariable("missionId") int missionId, Model model,
+			Employee employee) {
+		List<Employee> employeeList = employeeService.getEmployeeList(employee);
+		model.addAttribute("employeeList", employeeList);
+		model.addAttribute("missionId", missionId);
+		return "mission/employeeAssign";
+	}
 
-        if(bindingResult.hasErrors()) {
-            getMissionUpdate(missionId, missionUpdateForm, model);
-        }
+	/** 案件に従業員をアサイン */
+	@PostMapping("/assign/{employeeId}/{missionId}")
+	public String postMissionAssign(@PathVariable("employeeId") int employeeId,
+			@PathVariable("missionId") int missionId) {
 
-        log.info("missionUpdateForm.toString : " + missionUpdateForm.toString());
-        Mission mission = modelMapper.map(missionUpdateForm, Mission.class);
-        missionService.updateMission(mission);
+		missionService.assignEmployeeToMission(employeeId, missionId);
 
+		return "redirect:/mission/detail/{missionId}";
+	}
 
-        return "redirect:/mission/list";
-    }
+	/** 顧客アサインページを表示 */
+	@GetMapping("/assignCustomer/{missionId}")
+	public String getCustomerAssignPage(@PathVariable("missionId") int missionId, Model model) {
 
-    /** 案件削除 */
-    @PostMapping("/delete/{missionId}")
-    public String deleteMission(@PathVariable("missionId")int missionId) {
-        missionService.deleteMission(missionId);
+		List<Customer> customerList = customerService.getCustomerList();
+		model.addAttribute("customerList", customerList);
 
-        return "redirect:/mission/list";
-    }
+		model.addAttribute("missionId", missionId);
 
+		return "mission/customerAssign";
+	}
 
-    /** 従業員アサインページを表示 */
-    @GetMapping("/employeeAssign/{missionId}")
-    public String getMissionAssign(@PathVariable("missionId")int missionId, Model model,
-            Employee employee) {
-        List<Employee> employeeList = employeeService.getEmployeeList(employee);
-        model.addAttribute("employeeList", employeeList);
-        model.addAttribute("missionId", missionId);
-        return "mission/employeeAssign";
-    }
+	/** 案件に顧客をアサイン */
+	@PostMapping("/assignCustomer/{customerId}/{missionId}")
+	public String postAssignCustomer(@PathVariable("customerId") int customerId,
+			@PathVariable("missionId") int missionId) {
 
+		missionService.assignCustomerToMission(customerId, missionId);
 
+		return "redirect:/mission/detail/{missionId}";
+	}
 
+	/** アサインした顧客を取り消す */
+	@PostMapping("/cancelCustomer/{customerId}/{missionId}")
+	public String cancelCustomer(@PathVariable("customerId") int customerId,
+			@PathVariable("missionId") int missionId) {
 
-    /** 案件に従業員をアサイン */
-    @PostMapping("/assign/{employeeId}/{missionId}")
-    public String postMissionAssign(@PathVariable("employeeId")int employeeId, @PathVariable("missionId")int missionId) {
+		missionService.cancelCustomer(customerId, missionId);
+		return "redirect:/mission/detail/{missionId}";
+	}
 
-        missionService.assignEmployeeToMission(employeeId, missionId);
+	/** アサインした従業員を取り消す */
+	@PostMapping("/cancelEmployee/{employeeId}/{missionId}")
+	public String cancelEmployee(@PathVariable("employeeId") int employeeId,
+			@PathVariable("missionId") int missionId) {
 
-        return "redirect:/mission/detail/{missionId}";
-    }
-
-
-    /** 顧客アサインページを表示 */
-    @GetMapping("/assignCustomer/{missionId}")
-    public String getCustomerAssignPage(@PathVariable("missionId")int missionId, Model model) {
-
-        List<Customer> customerList = customerService.getCustomerList();
-        model.addAttribute("customerList", customerList);
-
-        model.addAttribute("missionId", missionId);
-
-        return "mission/customerAssign";
-    }
-
-    /** 案件に顧客をアサイン */
-    @PostMapping("/assignCustomer/{customerId}/{missionId}")
-    public String postAssignCustomer(@PathVariable("customerId")int customerId,
-            @PathVariable("missionId")int missionId) {
-
-        missionService.assignCustomerToMission(customerId, missionId);
-
-        return "redirect:/mission/detail/{missionId}";
-    }
-
-    /** アサインした顧客を取り消す */
-    @PostMapping("/cancelCustomer/{customerId}/{missionId}")
-    public String cancelCustomer(@PathVariable("customerId")int customerId,
-            @PathVariable("missionId")int missionId) {
-
-        missionService.cancelCustomer(customerId, missionId);
-        return "redirect:/mission/detail/{missionId}";
-    }
-
-    /** アサインした従業員を取り消す */
-    @PostMapping("/cancelEmployee/{employeeId}/{missionId}")
-    public String cancelEmployee(@PathVariable("employeeId")int employeeId,
-            @PathVariable("missionId")int missionId) {
-
-        missionService.cancelEmployee(employeeId, missionId);
-        return "redirect:/mission/detail/{missionId}";
-    }
-
-
+		missionService.cancelEmployee(employeeId, missionId);
+		return "redirect:/mission/detail/{missionId}";
+	}
 
 }

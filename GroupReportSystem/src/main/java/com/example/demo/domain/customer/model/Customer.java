@@ -7,17 +7,17 @@ import lombok.Data;
 @Data
 public class Customer {
 
-    private Integer customerId;
+	private Integer customerId;
 
-    private String customerCode;
+	private String customerCode;
 
-    private String customerName;
+	private String customerName;
 
-    private String phone;
+	private String phone;
 
-    private String address;
+	private String address;
 
-    private Date moveDate;
+	private Date moveDate;
 
-    private Integer payState;
+	private Integer payState;
 }

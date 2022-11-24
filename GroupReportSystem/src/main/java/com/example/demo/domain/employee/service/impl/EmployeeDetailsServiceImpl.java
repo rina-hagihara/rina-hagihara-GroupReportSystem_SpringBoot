@@ -19,34 +19,31 @@ import com.example.demo.domain.employee.service.EmployeeService;
 
 public class EmployeeDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private EmployeeService employeeService;
+	@Autowired
+	private EmployeeService employeeService;
 
-    @Override
-    public UserDetails loadUserByUsername(String employeeCode)throws UsernameNotFoundException{
+	@Override
+	public UserDetails loadUserByUsername(String employeeCode) throws UsernameNotFoundException {
 
-        //従業員情報取得
-        Employee loginEmployee = employeeService.getEmployeeDetailByCode(employeeCode);
+		//従業員情報取得
+		Employee loginEmployee = employeeService.getEmployeeDetailByCode(employeeCode);
 
-        //ユーザーが存在しない場合
-        if(loginEmployee == null) {
-            throw new UsernameNotFoundException("user not found");
-        }
+		//ユーザーが存在しない場合
+		if (loginEmployee == null) {
+			throw new UsernameNotFoundException("user not found");
+		}
 
-        //権限List作成
-        GrantedAuthority authority = new SimpleGrantedAuthority(loginEmployee.getRole());
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(authority);
+		//権限List作成
+		GrantedAuthority authority = new SimpleGrantedAuthority(loginEmployee.getRole());
+		List<GrantedAuthority> authorities = new ArrayList<>();
+		authorities.add(authority);
 
-        //UserDetails作成
-        UserDetails userDetails = (UserDetails) new User(loginEmployee.getEmployeeCode(),
-                loginEmployee.getPassword(), authorities);
+		//UserDetails作成
+		UserDetails userDetails = (UserDetails) new User(loginEmployee.getEmployeeCode(),
+				loginEmployee.getPassword(), authorities);
 
-        return userDetails;
+		return userDetails;
 
-
-
-
-    }
+	}
 
 }

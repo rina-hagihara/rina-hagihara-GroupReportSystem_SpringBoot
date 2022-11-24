@@ -24,109 +24,101 @@ import com.example.demo.domain.customer.service.CustomerService;
 
 import lombok.extern.slf4j.Slf4j;
 
-
-
 @Controller
 @RequestMapping("/customer")
 @Slf4j
 public class CustomerController {
 
+	@Autowired
+	private CustomerService customerService;
 
+	@Autowired
+	ModelMapper modelMapper;
 
-    @Autowired
-    private CustomerService customerService;
+	/** 顧客新規登録 */
 
-    @Autowired
-    ModelMapper modelMapper;
+	@GetMapping("/signup")
+	public String getCustomerSignup(Locale locale, Model model, @ModelAttribute CustomerSignupForm form) {
 
+		Map<String, Integer> payStateMap = PayState.getPayState();
 
+		model.addAttribute("payStateMap", payStateMap);
+		return "customer/signup";
 
-    /** 顧客新規登録 */
+	}
 
-    @GetMapping("/signup")
-    public String  getCustomerSignup(Locale locale, Model model, @ModelAttribute CustomerSignupForm form) {
+	@PostMapping("/signup")
+	public String postCustomerSignup(Locale locale, Model model,
+			@ModelAttribute @Validated CustomerSignupForm form, BindingResult bindingResult) {
 
-    	Map<String, Integer> payStateMap = PayState.getPayState();
+		if (bindingResult.hasErrors()) {
+			getCustomerSignup(locale, model, form);
+		}
 
-    	model.addAttribute("payStateMap", payStateMap);
-        return "customer/signup";
+		log.info(form.toString());
+		Customer customer = modelMapper.map(form, Customer.class);
+		customerService.insertCustomer(customer);
 
-    }
+		return "redirect:/customer/list";
+	}
 
-    @PostMapping("/signup")
-    public String postCustomerSignup(Locale locale, Model model,
-            @ModelAttribute @Validated CustomerSignupForm form, BindingResult bindingResult) {
+	/** 顧客一覧表示 */
 
-        if(bindingResult.hasErrors()) {
-            getCustomerSignup(locale, model, form);
-        }
+	@GetMapping("/list")
+	public String getCustomerList(Model model) {
+		List<Customer> customer = customerService.getCustomerList();
+		model.addAttribute("customer", customer);
+		return "customer/list";
+	}
 
-        log.info(form.toString());
-        Customer customer = modelMapper.map(form, Customer.class);
-        customerService.insertCustomer(customer);
+	/** 顧客詳細表示 */
 
-        return "redirect:/customer/list";
-    }
+	@GetMapping("/detail/{customerId}")
+	public String getCustomerDetail(@PathVariable int customerId, Model model) {
+		Customer customer = customerService.getCustomerDetail(customerId);
+		model.addAttribute("customer", customer);
+		return "customer/detail";
+	}
 
-    /** 顧客一覧表示 */
+	/** 顧客更新 */
 
-    @GetMapping("/list")
-    public String getCustomerList(Model model) {
-        List<Customer> customer = customerService.getCustomerList();
-        model.addAttribute("customer", customer);
-        return "customer/list";
-    }
+	@GetMapping("/update/{customerId}")
+	public String getCustomerUpdate(@PathVariable("customerId") int customerId,
+			@ModelAttribute CustomerUpdateForm customerUpdateForm,
+			Model model, Locale locale) {
 
-    /** 顧客詳細表示 */
+		if (customerUpdateForm.getCustomerCode() == null) {
 
-    @GetMapping("/detail/{customerId}")
-    public String getCustomerDetail(@PathVariable int customerId, Model model) {
-        Customer customer = customerService.getCustomerDetail(customerId);
-        model.addAttribute("customer", customer);
-        return "customer/detail";
-    }
+			Customer customer = customerService.getCustomerDetail(customerId);
+			customerUpdateForm = modelMapper.map(customer, CustomerUpdateForm.class);
+			model.addAttribute("customerUpdateForm", customerUpdateForm);
 
-    /** 顧客更新 */
+		}
 
+		log.info("customerUpdateForm.toString : " + customerUpdateForm.toString());
+		model.addAttribute("payStateMap", PayState.getPayState());
+		return "customer/update";
+	}
 
-    @GetMapping("/update/{customerId}")
-    public String getCustomerUpdate(@PathVariable("customerId")int customerId, @ModelAttribute CustomerUpdateForm customerUpdateForm,
-            Model model, Locale locale) {
+	@PostMapping("/update/{customerId}")
+	public String postCustomerUpdate(@PathVariable("customerId") int customerId,
+			@ModelAttribute @Validated CustomerUpdateForm customerUpdateForm, BindingResult bindingResult,
+			Model model, Locale locale) {
 
-        if(customerUpdateForm.getCustomerCode() == null) {
+		if (bindingResult.hasErrors()) {
+			getCustomerUpdate(customerId, customerUpdateForm, model, locale);
+		}
 
-        Customer customer = customerService.getCustomerDetail(customerId);
-        customerUpdateForm = modelMapper.map(customer, CustomerUpdateForm.class);
-        model.addAttribute("customerUpdateForm", customerUpdateForm);
+		Customer customer = modelMapper.map(customerUpdateForm, Customer.class);
+		customerService.updateCustomer(customer);
+		return "redirect:/customer/list";
+	}
 
-        }
-
-        log.info("customerUpdateForm.toString : " + customerUpdateForm.toString());
-        model.addAttribute("payStateMap", PayState.getPayState());
-        return "customer/update";
-    }
-
-    @PostMapping("/update/{customerId}")
-    public String postCustomerUpdate(@PathVariable("customerId") int customerId,
-            @ModelAttribute @Validated CustomerUpdateForm customerUpdateForm, BindingResult bindingResult,
-            Model model, Locale locale) {
-
-        if(bindingResult.hasErrors()) {
-            getCustomerUpdate(customerId, customerUpdateForm, model, locale);
-        }
-
-        Customer customer = modelMapper.map(customerUpdateForm, Customer.class);
-        customerService.updateCustomer(customer);
-        return "redirect:/customer/list";
-    }
-
-    /** 顧客削除 */
-    @PostMapping("/delete/{customerId}")
-    String deleteCustomer(@PathVariable("customerId")int customerId) {
-        customerService.deleteCustomer(customerId);
-        return "customer/list";
-    }
-
-
+	/** 顧客削除 */
+	@PostMapping("/delete/{customerId}")
+	String deleteCustomer(@PathVariable("customerId") int customerId) {
+		customerService.deleteCustomer(customerId);
+		return "customer/list";
+	}
 
 }

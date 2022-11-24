@@ -7,16 +7,16 @@ import lombok.Data;
 
 @Data
 public class EmployeeUpdateForm {
-    private int employeeId;
+	private int employeeId;
 
-    @NotBlank(groups = ValidGroup1.class)
-    private String employeeCode;
+	@NotBlank(groups = ValidGroup1.class)
+	private String employeeCode;
 
-    private String password;
+	private String password;
 
-    @NotBlank(groups = ValidGroup1.class)
-    private String employeeName;
+	@NotBlank(groups = ValidGroup1.class)
+	private String employeeName;
 
-    @NotNull(groups = ValidGroup1.class)
-    private String role;
+	@NotNull(groups = ValidGroup1.class)
+	private String role;
 }

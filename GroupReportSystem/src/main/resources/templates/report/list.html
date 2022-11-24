@@ -1,33 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
 <!-- 個別CSS読込 -->
-<link rel="stylesheet" th:href="@{/css/report/list.css}"/>
+<link rel="stylesheet" th:href="@{/css/report/list.css}" />
 <title>日報一覧</title>
 </head>
 <body>
-    <div layout:fragment="content">
-        <h2 th:text="#{report.list.title}"></h2>
-        <table>
-            <thead>
-            <tr>
-                <th th:text="#{reportTitle}"></th>
-                <th th:text="#{employeeName}"></th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${reportList}">
-                <td th:text="${item.reportTitle}"></td>
-                <td th:text="${item.employeeName}"></td>
-                <td>
-                    <a th:href="@{'/report/detail/' + ${item.reportId}}">詳細を見る</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
+	<div layout:fragment="content">
+		<h2 th:text="#{report.list.title}"></h2>
+		<table>
+			<thead>
+				<tr>
+					<th th:text="#{reportTitle}"></th>
+					<th th:text="#{employeeName}"></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="item : ${reportList}">
+					<td th:text="${item.reportTitle}"></td>
+					<td th:text="${item.employeeName}"></td>
+					<td><a th:href="@{'/report/detail/' + ${item.reportId}}">詳細を見る</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

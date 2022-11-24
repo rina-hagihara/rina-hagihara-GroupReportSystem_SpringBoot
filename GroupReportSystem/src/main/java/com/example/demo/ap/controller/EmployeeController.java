@@ -31,146 +31,130 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class EmployeeController {
 
+	@Autowired
+	private ModelMapper modelMapper;
 
+	@Autowired
+	private EmployeeService employeeService;
 
+	/** 従業員新規登録 */
 
-    @Autowired
-    private ModelMapper modelMapper;
+	/** ユーザー登録画面を表示 */
+	@GetMapping("/signup")
+	public String getSignupEmployee(Model model, Locale locale,
+			@ModelAttribute EmployeeSignupForm form) {
+		Map<String, String> roleMap = Role.getMapRole();
+		model.addAttribute("roleMap", roleMap);
+		return "employee/signup";
+	}
 
-    @Autowired
-    private EmployeeService employeeService;
+	/** 従業員登録処理 */
+	@PostMapping("/signup")
+	//従業員一覧にリダイレクト
+	public String postSignupEmployee(Model model, Locale locale,
+			@ModelAttribute @Validated(GroupOrder.class) EmployeeSignupForm form,
+			BindingResult bindingResult) {
 
+		if (bindingResult.hasErrors()) {
+			return getSignupEmployee(model, locale, form);
+		}
 
+		/** 既に登録済みの従業員コードがないか検索 */
+		Employee sameCodeEmployee = employeeService.findSameEmployeeCode(form.getEmployeeCode());
 
+		if (sameCodeEmployee != null) {
+			model.addAttribute("message", "既に同じ従業員番号が登録されています");
+			return getSignupEmployee(model, locale, form);
+		}
 
+		log.info(form.toString());
 
-    /** 従業員新規登録 */
+		Employee employee = modelMapper.map(form, Employee.class);
+		employeeService.signup(employee);
 
-    /** ユーザー登録画面を表示 */
-    @GetMapping("/signup")
-    public String getSignupEmployee(Model model, Locale locale,
-            @ModelAttribute EmployeeSignupForm form){
-        Map<String, String> roleMap = Role.getMapRole();
-        model.addAttribute("roleMap", roleMap);
-        return "employee/signup";
-    }
+		return "redirect:/employee/list";
+	}
 
-    /** 従業員登録処理 */
-    @PostMapping("/signup")
-    //従業員一覧にリダイレクト
-    public String postSignupEmployee(Model model, Locale locale, @ModelAttribute
-            @Validated(GroupOrder.class) EmployeeSignupForm form,
-            BindingResult bindingResult) {
+	/** 従業員一覧表示 *
+	 *
+	 */
+	/** 従業員一覧*/
+	@GetMapping("/list")
+	public String getEmployeeList(@ModelAttribute EmployeeListForm form, Model model) {
 
-        if(bindingResult.hasErrors()) {
-            return getSignupEmployee(model, locale, form);
-        }
+		Employee employee = modelMapper.map(form, Employee.class);
 
-        /** 既に登録済みの従業員コードがないか検索 */
-        Employee sameCodeEmployee = employeeService.findSameEmployeeCode(form.getEmployeeCode());
+		List<Employee> employeeList = employeeService.getEmployeeList(employee);
+		model.addAttribute("employeeList", employeeList);
+		return "employee/list";
+	}
 
-        if(sameCodeEmployee != null) {
-            model.addAttribute("message", "既に同じ従業員番号が登録されています");
-            return getSignupEmployee(model, locale, form);
-        }
+	/** ユーザー検索処理 */
+	@PostMapping("/list")
+	public String postEmployeeList(@ModelAttribute EmployeeListForm form, Model model) {
 
+		Employee employee = modelMapper.map(form, Employee.class);
 
+		List<Employee> employeeList = employeeService.getEmployeeList(employee);
+		model.addAttribute("employeeList", employeeList);
 
-        log.info(form.toString());
+		return "employee/list";
+	}
 
-        Employee employee = modelMapper.map(form, Employee.class);
-        employeeService.signup(employee);
+	/** 従業員詳細 */
 
-        return "redirect:/employee/list";
-    }
+	/** 従業員詳細を表示 */
+	@GetMapping("/detail/{employeeId}")
+	public String getDetail(@PathVariable("employeeId") int employeeId, Model model) {
+		Employee employee = employeeService.getEmployeeDetail(employeeId);
+		model.addAttribute("employee", employee);
 
-    /** 従業員一覧表示 *
-     *
-     */
-    /** 従業員一覧*/
-    @GetMapping("/list")
-    public String getEmployeeList(@ModelAttribute EmployeeListForm form, Model model) {
+		return "employee/detail";
+	}
 
-        Employee employee = modelMapper.map(form, Employee.class);
+	/** 従業員更新 */
+	@GetMapping("/update/{employeeId}")
+	public String getUpdate(@PathVariable("employeeId") int employeeId,
+			@ModelAttribute EmployeeUpdateForm employeeUpdateForm,
+			Model model, Locale locale) {
 
-        List<Employee> employeeList = employeeService.getEmployeeList(employee);
-        model.addAttribute("employeeList", employeeList);
-        return "employee/list";
-    }
+		if (employeeUpdateForm.getEmployeeCode() == null) {
+			Employee employee = employeeService.getEmployeeDetail(employeeId);
+			employeeUpdateForm = modelMapper.map(employee, EmployeeUpdateForm.class);
+			model.addAttribute("employeeUpdateForm", employeeUpdateForm);
+		}
 
-    /** ユーザー検索処理 */
-    @PostMapping("/list")
-    public String postEmployeeList(@ModelAttribute EmployeeListForm form, Model model) {
+		log.info("employeeUpdate.toString : " + employeeUpdateForm.toString());
+		model.addAttribute("roleMap", Role.getMapRole());
 
-        Employee employee = modelMapper.map(form, Employee.class);
+		return "employee/update";
+	}
 
-        List<Employee> employeeList = employeeService. getEmployeeList(employee);
-        model.addAttribute("employeeList", employeeList);
+	/** 従業員更新 */
+	@PostMapping("/update/{employeeId}")
+	public String postUpdate(@PathVariable("employeeId") int employeeId,
+			@ModelAttribute @Validated(GroupOrder.class) EmployeeUpdateForm employeeUpdateForm,
+			BindingResult bindingResult, Model model, Locale locale) {
 
-        return "employee/list";
-    }
+		if (bindingResult.hasErrors()) {
+			return getUpdate(employeeId, employeeUpdateForm, model, locale);
+		}
 
+		log.info("employeeUpdateForm.toString : " + employeeUpdateForm.toString());
 
+		Employee employee = modelMapper.map(employeeUpdateForm, Employee.class);
+		employeeService.updateEmployee(employee);
 
+		return "redirect:/employee/list";
 
+	}
 
-    /** 従業員詳細 */
+	/** 従業員削除 */
 
-    /** 従業員詳細を表示 */
-    @GetMapping("/detail/{employeeId}")
-    public String getDetail(@PathVariable("employeeId")int employeeId, Model model) {
-        Employee employee = employeeService.getEmployeeDetail(employeeId);
-        model.addAttribute("employee", employee);
-
-        return "employee/detail";
-    }
-
-    /** 従業員更新 */
-    @GetMapping("/update/{employeeId}")
-    public String getUpdate(@PathVariable("employeeId") int employeeId, @ModelAttribute EmployeeUpdateForm employeeUpdateForm,
-            Model model, Locale locale) {
-
-        if(employeeUpdateForm.getEmployeeCode() == null) {
-            Employee employee = employeeService.getEmployeeDetail(employeeId);
-            employeeUpdateForm = modelMapper.map(employee, EmployeeUpdateForm.class);
-            model.addAttribute("employeeUpdateForm", employeeUpdateForm);
-        }
-
-        log.info("employeeUpdate.toString : " + employeeUpdateForm.toString());
-        model.addAttribute("roleMap", Role.getMapRole());
-
-        return "employee/update";
-    }
-
-    /** 従業員更新 */
-    @PostMapping("/update/{employeeId}")
-    public String postUpdate(@PathVariable("employeeId")int employeeId, @ModelAttribute @Validated(GroupOrder.class)
-    EmployeeUpdateForm employeeUpdateForm, BindingResult bindingResult, Model model, Locale locale){
-
-        if(bindingResult.hasErrors()) {
-            return getUpdate(employeeId, employeeUpdateForm, model, locale);
-        }
-
-        log.info("employeeUpdateForm.toString : " + employeeUpdateForm.toString());
-
-        Employee employee = modelMapper.map(employeeUpdateForm, Employee.class);
-        employeeService.updateEmployee(employee);
-
-        return "redirect:/employee/list";
-
-    }
-
-
-
-    /** 従業員削除 */
-
-    @PostMapping("/delete/{employeeId}")
-    public String postDelete(@PathVariable("employeeId")int employeeId) {
-        employeeService.deleteEmployee(employeeId);
-        return "redirect:/employee/list";
-    }
-
-
-
+	@PostMapping("/delete/{employeeId}")
+	public String postDelete(@PathVariable("employeeId") int employeeId) {
+		employeeService.deleteEmployee(employeeId);
+		return "redirect:/employee/list";
+	}
 
 }

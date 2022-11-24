@@ -1,53 +1,66 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
-    <!-- 個別CSS -->
-    <link rel="stylesheet" th:href="@{/css/customer/list.css}"/>
-    <title>新規顧客登録</title>
+<!-- 個別CSS -->
+<link rel="stylesheet" th:href="@{/css/customer/list.css}" />
+<title>新規顧客登録</title>
 </head>
 <body>
-    <div layout:fragment="content">
-        <h2 th:text="#{customer.signup.title}">新規顧客登録</h2>
+	<div layout:fragment="content">
+		<h2 th:text="#{customer.signup.title}">新規顧客登録</h2>
 
-         <form method="post" action="/customer/signup" th:object="${customerSignupForm}">
-         <!-- 顧客番号 -->
-        <label for="customerCode" th:text="#{customerCode}"></label><br>
-        <input type="text" th:field="*{customerCode}" th:errorclass="is-invalid"/>
-        <div class="invalid-feedback" th:errors="*{customerCode}"></div><br><br>
+		<form method="post" action="/customer/signup"
+			th:object="${customerSignupForm}">
+			<!-- 顧客番号 -->
+			<label for="customerCode" th:text="#{customerCode}"></label><br>
+			<input type="text" th:field="*{customerCode}"
+				th:errorclass="is-invalid" />
+			<div class="invalid-feedback" th:errors="*{customerCode}"></div>
+			<br>
+			<br>
 
-        <!-- 顧客名 -->
-        <label for="customerName" th:text="#{customerName}"></label><br>
-        <input type="text" th:field="*{customerName}" th:errorclass="is-invalid"/>
-        <div class="invalid-feedback" th:errors="*{customerName}"></div><br><br>
+			<!-- 顧客名 -->
+			<label for="customerName" th:text="#{customerName}"></label><br>
+			<input type="text" th:field="*{customerName}"
+				th:errorclass="is-invalid" />
+			<div class="invalid-feedback" th:errors="*{customerName}"></div>
+			<br>
+			<br>
 
-        <!-- 電話番号 -->
-        <label for="phone" th:text="#{phone}"></label><br>
-        <input type="tel" th:field="*{phone}" th:errorclass="is-invalid"/>
-        <div class="invalid-feedback" th:errors="*{phone}"></div><br><br>
+			<!-- 電話番号 -->
+			<label for="phone" th:text="#{phone}"></label><br> <input
+				type="tel" th:field="*{phone}" th:errorclass="is-invalid" />
+			<div class="invalid-feedback" th:errors="*{phone}"></div>
+			<br>
+			<br>
 
-        <!-- 住所 -->
-        <label for="address" th:text="#{address}"></label><br>
-        <input type="text" th:field="*{address}" th:errorclass="is-invalid"/>
-        <div class="invalid-feedback" th:errors="*{address}"></div><br><br>
+			<!-- 住所 -->
+			<label for="address" th:text="#{address}"></label><br> <input
+				type="text" th:field="*{address}" th:errorclass="is-invalid" />
+			<div class="invalid-feedback" th:errors="*{address}"></div>
+			<br>
+			<br>
 
-        <!-- 引っ越し日時 -->
-        <label for="moveDate" th:text="#{moveDate}"></label><br>
-        <input type="date"  th:field="*{moveDate}" th:errorclass="is-invalid"/>
-        <div class="invalid-feedback" th:errors="*{moveDate}"></div><br><br>
+			<!-- 引っ越し日時 -->
+			<label for="moveDate" th:text="#{moveDate}"></label><br> <input
+				type="date" th:field="*{moveDate}" th:errorclass="is-invalid" />
+			<div class="invalid-feedback" th:errors="*{moveDate}"></div>
+			<br>
+			<br> S
+			<!-- 引っ越し代金支払い状況 -->
+			<label for="payState" th:text="#{payState}"></label><br> <select
+				th:field="*{payState}">
+				<option th:each="item:${payStateMap}" th:text="${item.key}"
+					th:value="${item.value}"></option>
+			</select>
+			<div class="invalid-feedback"
+				th:if="${#fields.hasErrors('payState')}" th:errors="*{payState}"></div>
 
-S
-       <!-- 引っ越し代金支払い状況 -->
-       <label for="payState" th:text="#{payState}"></label><br>
-       <select th:field="*{payState}">
-        <option th:each="item:${payStateMap}" th:text="${item.key}" th:value="${item.value}"></option>
-       </select>
-        <div class="invalid-feedback" th:if="${#fields.hasErrors('payState')}" th:errors="*{payState}"></div>
+			<input type="submit" th:value="#{signup.btn}" />
 
-        <input type="submit" th:value="#{signup.btn}"/>
-
-        </form>
-    </div>
+		</form>
+	</div>
 </body>
 </html>

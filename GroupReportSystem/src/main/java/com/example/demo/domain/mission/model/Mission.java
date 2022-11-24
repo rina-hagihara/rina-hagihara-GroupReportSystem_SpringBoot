@@ -1,9 +1,5 @@
 package com.example.demo.domain.mission.model;
 
-
-
-
-
 import java.util.Date;
 import java.util.List;
 
@@ -16,28 +12,21 @@ import lombok.Data;
 @Data
 public class Mission {
 
-    private int missionId;
+	private int missionId;
 
-    private String missionTitle;
+	private String missionTitle;
 
+	private Date visitDate;
 
-    private Date visitDate;
+	private Date moveDate;
 
+	private Date payDue;
 
-    private Date moveDate;
+	private String note;
 
+	private List<Employee> employeeList;
 
-    private Date payDue;
+	private List<Report> reportList;
 
-
-    private String note;
-
-
-    private List<Employee> employeeList;
-
-
-    private List<Report> reportList;
-
-
-    private List<Customer> customerList;
+	private List<Customer> customerList;
 }

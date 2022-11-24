@@ -1,7 +1,5 @@
 package com.example.demo.ap.controller;
 
-
-
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
@@ -19,50 +17,40 @@ import com.example.demo.domain.employee.model.Employee;
 import com.example.demo.domain.employee.service.EmployeeService;
 import com.example.demo.domain.mission.model.Mission;
 
-
-
 @Controller
 
 public class LoginController {
 
-    @Autowired
-    private EmployeeService employeeService;
+	@Autowired
+	private EmployeeService employeeService;
 
-    @Autowired
-    private HttpSession session;
+	@Autowired
+	private HttpSession session;
 
+	/* ログイン画面を表示 */
+	@GetMapping("/login")
+	public String getLogin(@ModelAttribute LoginForm loginForm) {
+		return "login/login";
+	}
 
+	/** ログインユーザーの担当案件一覧 */
+	@GetMapping("/loginUserMission")
+	public String getLoginedUserMission(@AuthenticationPrincipal UserDetails user, Model model) {
 
-    /* ログイン画面を表示 */
-    @GetMapping("/login")
-    public String getLogin(@ModelAttribute LoginForm loginForm) {
-        return "login/login";
-    }
+		String loginEmployeeCode = user.getUsername();
 
+		/** 従業員番号から従業員情報を一件取得 */
+		Employee employee = employeeService.getEmployeeDetailByCode(loginEmployeeCode);
 
+		/** 従業員idを条件に従業員案件を取得 */
+		Employee employeeMission = employeeService.getAssignedMission(employee.getEmployeeId());
 
-    /** ログインユーザーの担当案件一覧 */
-    @GetMapping("/loginUserMission")
-    public String getLoginedUserMission(@AuthenticationPrincipal UserDetails user, Model model) {
+		if (employeeMission != null) {
+			model.addAttribute("loginEmployeeMission", employeeMission.getMissionList());
+		} else {
+			model.addAttribute("loginEmployeeMission", new ArrayList<Mission>());
+		}
 
-
-        String loginEmployeeCode = user.getUsername();
-
-        /** 従業員番号から従業員情報を一件取得 */
-        Employee employee = employeeService.getEmployeeDetailByCode(loginEmployeeCode);
-
-        /** 従業員idを条件に従業員案件を取得 */
-        Employee employeeMission = employeeService.getAssignedMission(employee.getEmployeeId());
-
-        if(employeeMission != null) {
-        model.addAttribute("loginEmployeeMission", employeeMission.getMissionList());
-        } else {
-            model.addAttribute("loginEmployeeMission", new ArrayList<Mission>());
-        }
-
-        return "topPage";
-    }
+		return "topPage";
+	}
 }
-
-
-

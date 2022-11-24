@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
-    <title>顧客一覧</title>
-    <!-- 個別CSS読込 -->
-    <link rel="stylesheet" th:href="@{/css/customer/list.css}">
+<title>顧客一覧</title>
+<!-- 個別CSS読込 -->
+<link rel="stylesheet" th:href="@{/css/customer/list.css}">
 </head>
 <body>
-    <div layout:fragment="content">
-    <h2 th:text="#{customer.list.title}"></h2>
-    <table>
-        <thead>
-            <tr>
-                <th th:text="#{customerCode}"></th>
-                <th th:text="#{customerName}"></th>
-                <th th:text="#{detail}"></th>
-        </thead>
-        <tbody th:each="item : ${customer}">
-            <tr>
-                <td th:text="${item.customerCode}"></td>
-                <td th:text="${item.customerName}"></td>
-                <td>
-                    <a th:href="@{'/customer/detail/' + ${item.customerId}}">詳細を見る</a>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <a th:href="@{/customer/signup}">顧客の新規登録</a>
-    </div>
+	<div layout:fragment="content">
+		<h2 th:text="#{customer.list.title}"></h2>
+		<table>
+			<thead>
+				<tr>
+					<th th:text="#{customerCode}"></th>
+					<th th:text="#{customerName}"></th>
+					<th th:text="#{detail}"></th>
+			</thead>
+			<tbody th:each="item : ${customer}">
+				<tr>
+					<td th:text="${item.customerCode}"></td>
+					<td th:text="${item.customerName}"></td>
+					<td><a th:href="@{'/customer/detail/' + ${item.customerId}}">詳細を見る</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<a th:href="@{/customer/signup}">顧客の新規登録</a>
+	</div>
 </body>

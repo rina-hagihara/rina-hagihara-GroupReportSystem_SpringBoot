@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class EmployeeListForm {
 
-    private String employeeCode;
+	private String employeeCode;
 
-    private String employeeName;
+	private String employeeName;
 }

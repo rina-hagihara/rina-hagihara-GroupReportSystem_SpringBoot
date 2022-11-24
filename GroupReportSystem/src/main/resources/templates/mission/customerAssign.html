@@ -1,40 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
 <!-- 個別CSS読込 -->
 <link rel="stylesheet" th:href="@{/css/mission/list.css}">
 <title>顧客アサイン</title>
 </head>
 <body>
-    <div layout:fragment="content">
-        <h2>顧客アサイン画面</h2>
-        <div class="customer-list">
-            <h2>顧客一覧</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>顧客番号</th>
-                        <th>氏名</th>
-                        <th>詳細</th>
-                        <th>操作</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="item : ${customerList}">
-                        <td th:text="${item.customerCode}"></td>
-                        <td th:text="${item.customerName}"></td>
-                        <td><a th:href="@{'/customer/detail/' + ${item.customerId}}">詳細を見る</a></td>
-                        <td>
-                            <form method="post" th:action="|/mission/assignCustomer/${item.customerId}/${missionId}|">
-                                <button type="submit">この顧客ををアサイン</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <a th:href="@{/customer/signup}">顧客の新規登録</a>
-        </div>
-    </div>
+	<div layout:fragment="content">
+		<h2>顧客アサイン画面</h2>
+		<div class="customer-list">
+			<h2>顧客一覧</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>顧客番号</th>
+						<th>氏名</th>
+						<th>詳細</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="item : ${customerList}">
+						<td th:text="${item.customerCode}"></td>
+						<td th:text="${item.customerName}"></td>
+						<td><a th:href="@{'/customer/detail/' + ${item.customerId}}">詳細を見る</a></td>
+						<td>
+							<form method="post"
+								th:action="|/mission/assignCustomer/${item.customerId}/${missionId}|">
+								<button type="submit">この顧客ををアサイン</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<a th:href="@{/customer/signup}">顧客の新規登録</a>
+		</div>
+	</div>
 </body>

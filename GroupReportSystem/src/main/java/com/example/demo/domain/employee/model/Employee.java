@@ -5,17 +5,18 @@ import java.util.List;
 import com.example.demo.domain.mission.model.Mission;
 
 import lombok.Data;
+
 @Data
 public class Employee {
-    private int employeeId;
+	private int employeeId;
 
-    private String employeeCode;
+	private String employeeCode;
 
-    private String employeeName;
+	private String employeeName;
 
-    private String password;
+	private String password;
 
-    private String role;
+	private String role;
 
-    private List<Mission> missionList;
+	private List<Mission> missionList;
 }

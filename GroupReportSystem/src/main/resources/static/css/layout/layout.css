@@ -1,50 +1,50 @@
-.button{
-    position: absolute;
-    top: 15px;
-    right: 40px;
-    width: 120px;
-    height: 40px;
-    background-color: palegreen;
+.button {
+	position: absolute;
+	top: 15px;
+	right: 40px;
+	width: 120px;
+	height: 40px;
+	background-color: palegreen;
 }
 
-.header{
-    width: 100%;
-    background-color: forestgreen;
-    height: 70px;
-    position: relative;
+.header {
+	width: 100%;
+	background-color: forestgreen;
+	height: 70px;
+	position: relative;
 }
 
-.menu{
-    width: 18%;
-    padding: 40px 25px;
-    background-color: palegreen;
+.menu {
+	width: 18%;
+	padding: 40px 25px;
+	background-color: palegreen;
 }
 
-.menu h1{
-    font-size: 1.8rem;
+.menu h1 {
+	font-size: 1.8rem;
 }
 
-.menu-list{
-    list-style: none;
-    padding: 0;
-    font-size: 1.4rem;
-    margin-top: 2rem;
+.menu-list {
+	list-style: none;
+	padding: 0;
+	font-size: 1.4rem;
+	margin-top: 2rem;
 }
 
-.menu-list li{
-    margin-bottom: 1rem;
+.menu-list li {
+	margin-bottom: 1rem;
 }
 
-.menu-list li a{
-    color: forestgreen;
+.menu-list li a {
+	color: forestgreen;
 }
 
-.wrapper{
-    display: flex;
+.wrapper {
+	display: flex;
 }
 
-.content{
-    width: 82%;
-    padding: 7rem;
-    height: 100vh;
+.content {
+	width: 82%;
+	padding: 7rem;
+	height: 100vh;
 }

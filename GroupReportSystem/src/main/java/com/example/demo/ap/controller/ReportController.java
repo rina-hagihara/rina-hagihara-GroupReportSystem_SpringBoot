@@ -20,139 +20,118 @@ import com.example.demo.domain.report.service.ReportService;
 
 import lombok.extern.slf4j.Slf4j;
 
-
-
 @Controller
 @RequestMapping("/report")
 @Slf4j
 public class ReportController {
 
+	@Autowired
+	ReportService reportService;
 
-    @Autowired
-    ReportService reportService;
+	@Autowired
+	MissionService missionService;
 
-    @Autowired
-    MissionService missionService;
+	@Autowired
+	ModelMapper modelMapper;
 
-    @Autowired
-    ModelMapper modelMapper;
+	/** 新規日報作成画面表示 */
+	@GetMapping("/signup/{missionId}")
+	String getSignupReport(@PathVariable("missionId") int missionId, @ModelAttribute ReportSignupForm form,
+			Model model) {
+		model.addAttribute("missionId", missionId);
+		return "report/signup";
+	}
 
+	/** 新規日報作成処理 */
+	@PostMapping("/signup/{missionId}")
+	String postReportSignup(@PathVariable("missionId") int missionId, @ModelAttribute @Validated ReportSignupForm form,
+			BindingResult bindingResult, Model model) {
 
+		if (bindingResult.hasErrors()) {
+			getSignupReport(missionId, form, model);
+		}
 
-    /** 新規日報作成画面表示 */
-    @GetMapping("/signup/{missionId}")
-    String getSignupReport(@PathVariable("missionId")int missionId, @ModelAttribute ReportSignupForm form,
-            Model model) {
-        model.addAttribute("missionId", missionId);
-        return "report/signup";
-    }
+		log.info(form.toString());
 
-    /** 新規日報作成処理 */
-    @PostMapping("/signup/{missionId}")
-    String postReportSignup(@PathVariable("missionId")int missionId, @ModelAttribute @Validated ReportSignupForm form,
-            BindingResult bindingResult, Model model) {
+		Report report = modelMapper.map(form, Report.class);
+		reportService.signupReport(report);
 
-        if(bindingResult.hasErrors()) {
-            getSignupReport(missionId, form, model);
-        }
+		Report savedReport = reportService.getReportDetailByCode(report.getReportCode());
+		int reportId = savedReport.getReportId();
+		missionService.connectMissionToReport(missionId, reportId);
 
-        log.info(form.toString());
+		return "redirect:/mission/detail/{missionId}";
 
-        Report report = modelMapper.map(form, Report.class);
-        reportService.signupReport(report);
+	}
 
-        Report savedReport = reportService.getReportDetailByCode(report.getReportCode());
-        int reportId =  savedReport.getReportId();
-        missionService.connectMissionToReport(missionId, reportId);
+	/** 日報一覧表示
+	@GetMapping("/list")
+	public String getReportList(Model model) {
+	
+	    List<Report> reportList = reportService.getReportList();
+	    model.addAttribute("reportList", reportList);
+	
+	    return "report/list";
+	} */
 
-        return "redirect:/mission/detail/{missionId}";
+	/** 日報詳細表示 */
+	@GetMapping("detail/{reportId}/{missionId}")
+	public String getReportDetail(@PathVariable("reportId") int reportId,
+			@PathVariable("missionId") int missionId, Model model) {
 
+		Report report = reportService.getReportDetail(reportId);
+		model.addAttribute("report", report);
 
-    }
+		model.addAttribute("missionId", missionId);
 
-    /** 日報一覧表示
-    @GetMapping("/list")
-    public String getReportList(Model model) {
+		return "report/detail";
+	}
 
-        List<Report> reportList = reportService.getReportList();
-        model.addAttribute("reportList", reportList);
+	/** 日報更新画面表示 */
+	@GetMapping("/update/{reportId}/{missionId}")
+	public String getUpdateReport(@PathVariable("reportId") int reportId, @PathVariable("missionId") int missionId,
+			Model model, @ModelAttribute ReportUpdateForm reportUpdateForm) {
 
-        return "report/list";
-    } */
+		if (reportUpdateForm.getReportTitle() == null) {
+			/** 既に登録済みの情報を画面に表示 */
+			Report savedReport = reportService.getReportDetail(reportId);
+			reportUpdateForm = modelMapper.map(savedReport, ReportUpdateForm.class);
+			model.addAttribute("reportUpdateForm", reportUpdateForm);
+		}
 
+		model.addAttribute("reportId", reportId);
 
-    /** 日報詳細表示 */
-    @GetMapping("detail/{reportId}/{missionId}")
-    public String getReportDetail(@PathVariable("reportId")int reportId,
-            @PathVariable("missionId")int missionId, Model model) {
+		log.info("reportUpdateForm.toString() :" + reportUpdateForm.toString());
 
-        Report report = reportService.getReportDetail(reportId);
-        model.addAttribute("report", report);
+		return "report/update";
+	}
 
-        model.addAttribute("missionId", missionId);
+	/** 日報更新処理 */
+	@PostMapping("/update/{reportId}/{missionId}")
+	public String updateReport(@PathVariable("reportId") int reportId, @PathVariable("missionId") int missionId,
+			@ModelAttribute @Validated ReportUpdateForm reportUpdateForm, BindingResult bindingResult, Model model) {
 
-        return "report/detail";
-    }
+		if (bindingResult.hasErrors()) {
+			getUpdateReport(reportId, missionId, model, reportUpdateForm);
+		}
 
-    /** 日報更新画面表示 */
-    @GetMapping("/update/{reportId}/{missionId}")
-    public String getUpdateReport(@PathVariable("reportId")int reportId, @PathVariable("missionId")int missionId,
-            Model model, @ModelAttribute ReportUpdateForm reportUpdateForm) {
+		log.info("reportUpdateForm.toString() :" + reportUpdateForm.toString());
 
-        if(reportUpdateForm.getReportTitle() == null) {
-        /** 既に登録済みの情報を画面に表示 */
-        Report savedReport = reportService.getReportDetail(reportId);
-        reportUpdateForm = modelMapper.map(savedReport, ReportUpdateForm.class);
-        model.addAttribute("reportUpdateForm", reportUpdateForm);
-        }
+		/** 更新処理 */
+		Report report = modelMapper.map(reportUpdateForm, Report.class);
+		reportService.updateReport(report);
 
-        model.addAttribute("reportId", reportId);
+		return "redirect:/mission/detail/{missionId}";
 
-        log.info("reportUpdateForm.toString() :" + reportUpdateForm.toString());
+	}
 
-        return "report/update";
-    }
+	/** 日報削除処理 */
+	@PostMapping("/delete/{reportId}/{missionId}")
+	public String deleteReportOne(@PathVariable("reportId") int reportId, @PathVariable("missionId") int missionId) {
 
-    /** 日報更新処理 */
-    @PostMapping("/update/{reportId}/{missionId}")
-    public String updateReport(@PathVariable("reportId")int reportId, @PathVariable("missionId")int missionId,
-            @ModelAttribute @Validated ReportUpdateForm reportUpdateForm
-            ,BindingResult bindingResult, Model model) {
+		reportService.deleteReport(reportId);
 
-        if(bindingResult.hasErrors()) {
-            getUpdateReport(reportId, missionId, model, reportUpdateForm);
-        }
-
-        log.info("reportUpdateForm.toString() :" + reportUpdateForm.toString());
-
-        /** 更新処理 */
-        Report report = modelMapper.map(reportUpdateForm, Report.class);
-        reportService.updateReport(report);
-
-        return "redirect:/mission/detail/{missionId}";
-
-
-    }
-
-    /** 日報削除処理 */
-    @PostMapping("/delete/{reportId}/{missionId}")
-    public String deleteReportOne(@PathVariable("reportId")int reportId, @PathVariable("missionId")int missionId) {
-
-        reportService.deleteReport(reportId);
-
-        return "redirect:/mission/detail/{missionId}";
-    }
-
-
-
-
-
-
-
-
-
-
-
-
+		return "redirect:/mission/detail/{missionId}";
+	}
 
 }

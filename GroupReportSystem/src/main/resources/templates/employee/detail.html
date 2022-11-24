@@ -1,36 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http:/www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http:/www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
 <title>従業員詳細</title>
 <!-- CSS読込 -->
 <link rel="stylesheet" th:href="@{/css/employee/list.css}">
 </head>
 <body>
-    <div layout:fragment="content">
-    <div>
-        <h2>従業員詳細</h2>
-    </div>
-    <div th:object="${employee}">
-        <table>
-            <tbody>
-            <tr>
-                <th>従業員番号</th>
-                <td th:text="*{employeeCode}"></td>
-            </tr>
-            <tr>
-                <th>従業員名</th>
-                <td th:text="*{employeeName}"></td>
-            </tr>
-            <tr>
-                <th>権限</th>
-                <td th:text="*{role == 1}? '管理者' : '一般'"></td>
-            </tr>
-            </tbody>
-        </table>
-        <a th:href="@{'/employee/update/' + *{employeeId}}">この従業員情報を更新する</a>
-        </div>
-    </div>
+	<div layout:fragment="content">
+		<div>
+			<h2>従業員詳細</h2>
+		</div>
+		<div th:object="${employee}">
+			<table>
+				<tbody>
+					<tr>
+						<th>従業員番号</th>
+						<td th:text="*{employeeCode}"></td>
+					</tr>
+					<tr>
+						<th>従業員名</th>
+						<td th:text="*{employeeName}"></td>
+					</tr>
+					<tr>
+						<th>権限</th>
+						<td th:text="*{role == 1}? '管理者' : '一般'"></td>
+					</tr>
+				</tbody>
+			</table>
+			<a th:href="@{'/employee/update/' + *{employeeId}}">この従業員情報を更新する</a>
+		</div>
+	</div>
 </body>
 </html>

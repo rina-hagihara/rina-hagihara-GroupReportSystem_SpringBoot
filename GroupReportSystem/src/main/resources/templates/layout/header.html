@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
 </head>
 <body>
-    <header layout:fragment="header" class="header">
-        <form method="post" th:action="@{/logout}">
-            <button class="button" type="submit">ログアウト</button>
-        </form>
-    </header>
+	<header layout:fragment="header" class="header">
+		<form method="post" th:action="@{/logout}">
+			<button class="button" type="submit">ログアウト</button>
+		</form>
+	</header>
 </body>
 </html>

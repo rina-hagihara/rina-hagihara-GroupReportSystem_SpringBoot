@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 
 <head>
 <!-- 個別CSS読込 -->
@@ -9,26 +9,26 @@ layout:decorate="~{layout/layout}">
 <title>案件一覧</title>
 </head>
 <body>
-<div layout:fragment="content">
-    <h2 th:text="#{mission.list.title}"></h2>
+	<div layout:fragment="content">
+		<h2 th:text="#{mission.list.title}"></h2>
 
-    <table>
-        <thead>
-            <th th:text="#{missionId}"></th>
-            <th th:text="#{missionTitle}"></th>
-            <th th:text="#{moveDate}"></th>
-            <th th:text="#{detail}"></th>
-        </thead>
-        <tbody >
-            <tr th:each="item:${mission}">
-                <td th:text="${item.missionId}"></td>
-                <td th:text="${item.missionTitle}"></td>
-                <td th:text="${#dates.format(item.moveDate, 'yyyy-MM-dd')}"></td>
-                <td><a th:href="@{'/mission/detail/' + ${item.missionId}}">詳細を見る</a></td>
-            </tr>
-        </tbody>
-    </table>
-    <a th:href="@{/mission/signup}">新規案件を登録</a>
-</div>
+		<table>
+			<thead>
+				<th th:text="#{missionId}"></th>
+				<th th:text="#{missionTitle}"></th>
+				<th th:text="#{moveDate}"></th>
+				<th th:text="#{detail}"></th>
+			</thead>
+			<tbody>
+				<tr th:each="item:${mission}">
+					<td th:text="${item.missionId}"></td>
+					<td th:text="${item.missionTitle}"></td>
+					<td th:text="${#dates.format(item.moveDate, 'yyyy-MM-dd')}"></td>
+					<td><a th:href="@{'/mission/detail/' + ${item.missionId}}">詳細を見る</a></td>
+				</tr>
+			</tbody>
+		</table>
+		<a th:href="@{/mission/signup}">新規案件を登録</a>
+	</div>
 </body>
 </html>

@@ -1,12 +1,12 @@
 package com.example.demo.constant;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public enum PayState {
 
-	PAID("支払い済み", 1),
-	UNPAID("未払い", 2);
+	PAID("支払い済み", 1), UNPAID("未払い", 2);
 
 	public final String state;
 	public final Integer code;
@@ -26,17 +26,10 @@ public enum PayState {
 		return this.code;
 	}
 
-	public static Map<String, Integer> getPayState(){
+	public static Map<String, Integer> getPayState() {
 
-		Map<String, Integer> payStates = new LinkedHashMap<>();
-		PayState paid = PayState.PAID;
-		payStates.put(paid.getState(), paid.getCode());
-
-		PayState unpaid = PayState.UNPAID;
-		payStates.put(unpaid.getState(), unpaid.getCode());
-
-		return payStates;
+		return Stream.of(PayState.values()).collect(Collectors
+				.toMap(e -> e.getState(), e -> e.getCode()));
 	}
-
 
 }

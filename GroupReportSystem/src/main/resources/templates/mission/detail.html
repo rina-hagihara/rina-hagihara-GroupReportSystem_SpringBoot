@@ -1,147 +1,150 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 <head>
 <!-- 個別CSS読込 -->
 <link rel="stylesheet" th:href="@{/css/mission/list.css}">
 <title>案件詳細</title>
 </head>
 <body>
-<div layout:fragment="content">
-    <h2 th:text="#{mission.detail.title}"></h2>
-    <table th:object="${mission}">
-    <tr>
-        <th th:text="#{missionId}"></th>
-        <td th:text="*{missionId}"></td>
-    </tr>
-    <tr>
-        <th th:text="#{missionTitle}"></th>
-        <td th:text="*{missionTitle}"></td>
-    </tr>
-    <tr>
-        <th th:text="#{visitDate}"></th>
-        <td th:text="*{#dates.format(visitDate, 'yyyy/MM/dd')}"></td>
-    </tr>
-    <tr>
-        <th th:text="#{moveDate}"></th>
-        <td th:text="*{#dates.format(moveDate, 'yyyy/MM/dd')}"></td>
-    </tr>
-    <tr>
-        <th th:text="#{payDue}"></th>
-        <td th:text="*{#dates.format(payDue, 'yyyy/MM/dd')}"></td>
-    </tr>
-    <tr>
-        <th th:text="#{note}"></th>
-        <td th:text="*{note}"></td>
-    </tr>
-    </table>
-    <a th:href="@{'/mission/update/' + ${mission.missionId}}">この案件を編集する</a><br/><br/>
+	<div layout:fragment="content">
+		<h2 th:text="#{mission.detail.title}"></h2>
+		<table th:object="${mission}">
+			<tr>
+				<th th:text="#{missionId}"></th>
+				<td th:text="*{missionId}"></td>
+			</tr>
+			<tr>
+				<th th:text="#{missionTitle}"></th>
+				<td th:text="*{missionTitle}"></td>
+			</tr>
+			<tr>
+				<th th:text="#{visitDate}"></th>
+				<td th:text="*{#dates.format(visitDate, 'yyyy/MM/dd')}"></td>
+			</tr>
+			<tr>
+				<th th:text="#{moveDate}"></th>
+				<td th:text="*{#dates.format(moveDate, 'yyyy/MM/dd')}"></td>
+			</tr>
+			<tr>
+				<th th:text="#{payDue}"></th>
+				<td th:text="*{#dates.format(payDue, 'yyyy/MM/dd')}"></td>
+			</tr>
+			<tr>
+				<th th:text="#{note}"></th>
+				<td th:text="*{note}"></td>
+			</tr>
+		</table>
+		<a th:href="@{'/mission/update/' + ${mission.missionId}}">この案件を編集する</a><br />
+		<br />
 
 
 
 
 
-    <th:block if="${assignedEmployeeList != null and assignedEmployeeList.size() > 0}">
-    <div class="mission-related-box">
-    <h3>担当者一覧</h3>
-    <table>
-    <thead>
-        <tr>
-            <th>従業員番号</th>
-            <th>従業員名</th>
-            <th th:text="#{controll}"></th>
-            <th th:text="#{cansel}"></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="item : ${assignedEmployeeList}">
-            <td th:text="${item.employeeCode}"></td>
-            <td th:text="${item.employeeName}"></td>
-            <td>
-                <a th:href="@{'/employee/detail/' + ${item.employeeId}}">詳細を見る</a>
-            </td>
-            <td>
-                    <form method="post" th:action="|/mission/cancelEmployee/${item.employeeId}/${mission.missionId}|" >
-                        <button type="submit" >この従業員を取り消す</button>
-                    </form>
-                </td>
-        </tr>
-   </tbody>
-    </table>
-    <div class="assign-button">
-        <a th:href="@{'/mission/employeeAssign/' + ${mission.missionId}}">従業員をアサイン</a><br/><br/>
-    </div>
-    </div>
-    </th:block>
+		<th:block
+			if="${assignedEmployeeList != null and assignedEmployeeList.size() > 0}">
+			<div class="mission-related-box">
+				<h3>担当者一覧</h3>
+				<table>
+					<thead>
+						<tr>
+							<th>従業員番号</th>
+							<th>従業員名</th>
+							<th th:text="#{controll}"></th>
+							<th th:text="#{cansel}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${assignedEmployeeList}">
+							<td th:text="${item.employeeCode}"></td>
+							<td th:text="${item.employeeName}"></td>
+							<td><a th:href="@{'/employee/detail/' + ${item.employeeId}}">詳細を見る</a>
+							</td>
+							<td>
+								<form method="post"
+									th:action="|/mission/cancelEmployee/${item.employeeId}/${mission.missionId}|">
+									<button type="submit">この従業員を取り消す</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="assign-button">
+					<a th:href="@{'/mission/employeeAssign/' + ${mission.missionId}}">従業員をアサイン</a><br />
+					<br />
+				</div>
+			</div>
+		</th:block>
 
 
 
 
 
-    <th:block if="${assignedCustomerList != null and assignedCustomerList.size() > 0}">
-    <div class="mission-related-box">
-    <h3>対象顧客</h3>
-    <table>
-        <thead>
-            <tr>
-                <th th:text="#{customerCode}"></th>
-                <th th:text="#{customerName}"></th>
-                <th th:text="#{controll}"></th>
-                <th th:text="#{cansel}"></th>
-        </thead>
-        <tbody>
-            <tr  th:each="item : ${assignedCustomerList}">
-                <td th:text="${item.customerCode}"></td>
-                <td th:text="${item.customerName}"></td>
-                <td>
-                    <a th:href="@{'/customer/detail/' + ${item.customerId}}">詳細を見る</a>
-                </td>
-                <td>
-                    <form method="post" th:action="|/mission/cancelCustomer/${item.customerId}/${mission.missionId}|" >
-                        <button type="submit" >この顧客を取り消す</button>
-                    </form>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-     <div class="assign-button">
-    <a th:href="@{'/mission/assignCustomer/' + ${mission.missionId}}">顧客をアサイン</a><br/><br/>
-    </div>
-    </div>
-    </th:bllock>
+		<th:block
+			if="${assignedCustomerList != null and assignedCustomerList.size() > 0}">
+			<div class="mission-related-box">
+				<h3>対象顧客</h3>
+				<table>
+					<thead>
+						<tr>
+							<th th:text="#{customerCode}"></th>
+							<th th:text="#{customerName}"></th>
+							<th th:text="#{controll}"></th>
+							<th th:text="#{cansel}"></th>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${assignedCustomerList}">
+							<td th:text="${item.customerCode}"></td>
+							<td th:text="${item.customerName}"></td>
+							<td><a th:href="@{'/customer/detail/' + ${item.customerId}}">詳細を見る</a>
+							</td>
+							<td>
+								<form method="post"
+									th:action="|/mission/cancelCustomer/${item.customerId}/${mission.missionId}|">
+									<button type="submit">この顧客を取り消す</button>
+								</form>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="assign-button">
+					<a th:href="@{'/mission/assignCustomer/' + ${mission.missionId}}">顧客をアサイン</a><br />
+					<br />
+				</div>
+			</div>
+			</th:bllock>
 
 
 
 
 
 
-    <div class="mission-related-box">
-    <h3>この案件の日報</h3>
-        <table>
-            <thead>
-            <tr>
-                <th th:text="#{reportTitle}"></th>
-                <th th:text="#{employeeName}"></th>
-                <th th:text="#{controll}"></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item : ${missionReportList}">
-                <td th:text="${item.reportTitle}"></td>
-                <td th:text="${item.employeeName}"></td>
-                <td>
-                    <a th:href="@{'/report/detail/' + ${item.reportId}} + '/' + ${mission.missionId}">詳細を見る</a>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-      <div class="assign-button">
-        <a th:href="@{'/report/signup/' +  ${mission.missionId}}">日報を書く</a>
-      </div>
-        </div>
-
-
-    </div>
+			<div class="mission-related-box">
+				<h3>この案件の日報</h3>
+				<table>
+					<thead>
+						<tr>
+							<th th:text="#{reportTitle}"></th>
+							<th th:text="#{employeeName}"></th>
+							<th th:text="#{controll}"></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="item : ${missionReportList}">
+							<td th:text="${item.reportTitle}"></td>
+							<td th:text="${item.employeeName}"></td>
+							<td><a
+								th:href="@{'/report/detail/' + ${item.reportId}} + '/' + ${mission.missionId}">詳細を見る</a>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="assign-button">
+					<a th:href="@{'/report/signup/' +  ${mission.missionId}}">日報を書く</a>
+				</div>
+			</div>
+	</div>
 </body>
 </html>

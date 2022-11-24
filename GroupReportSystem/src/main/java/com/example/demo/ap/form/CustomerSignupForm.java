@@ -1,7 +1,5 @@
 package com.example.demo.ap.form;
 
-
-
 import java.util.Date;
 
 import javax.validation.constraints.NotBlank;
@@ -14,23 +12,20 @@ import lombok.Data;
 @Data
 public class CustomerSignupForm {
 
-    @NotBlank(groups = ValidGroup1.class)
-    private String customerCode;
+	@NotBlank(groups = ValidGroup1.class)
+	private String customerCode;
 
-    @NotBlank(groups = ValidGroup1.class)
-    private String customerName;
+	@NotBlank(groups = ValidGroup1.class)
+	private String customerName;
 
+	private String phone;
 
-    private String phone;
+	private String address;
 
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date moveDate;
 
-    private String address;
-
-
-    @DateTimeFormat(pattern="yyyy-MM-dd")
-    private Date moveDate;
-
-    @NotNull(groups = ValidGroup1.class)
-    private Integer payState;
+	@NotNull(groups = ValidGroup1.class)
+	private Integer payState;
 
 }
